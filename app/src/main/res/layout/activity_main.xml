@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+  >
+
+  <LinearLayout   android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      >
+  <android.support.v7.widget.Toolbar
+      android:id="@+id/toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="?attr/actionBarSize"
+      android:background="@color/colorMain"
+      app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+      app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="统计"
+        android:textColor="#FFFFFF"
+        android:textSize = "16sp"
+        android:layout_gravity= "center"/>
+
+  </android.support.v7.widget.Toolbar>
+
+  <WebView
+      android:id="@+id/webview"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"
+      android:hardwareAccelerated="true"
+      android:layout_centerInParent="true" />
+    
+  <com.linkage.dragGridView.DragGridView
+        android:id="@+id/dragGridView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:cacheColorHint="@android:color/transparent"
+        android:gravity="center"
+        android:horizontalSpacing="10dip"
+        android:listSelector="@android:color/transparent"
+        android:numColumns="auto_fit"
+        android:paddingTop="10dp"
+        android:verticalSpacing="15dip" >
+    </com.linkage.dragGridView.DragGridView>
+
+  </LinearLayout>
+
+  <com.linkage.shapeloading.LoadingView
+      android:id="@+id/loadView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
+      app:loadingText="请稍等，正在加载中..." />
+</RelativeLayout>

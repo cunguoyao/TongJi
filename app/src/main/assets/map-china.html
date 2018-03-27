@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8">
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div id="container" style="height: 100%"></div>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+       <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
+       <script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+option = null;
+option = {
+    tooltip: {
+        trigger: 'item',
+        formatter: '{b}'
+    },
+    dataRange: {
+            x: 'left',
+            y: 'bottom',
+            splitList: [
+                {start: 100, label: '增长省份',color: 'green'},
+                {start: 50, end: 100, label: '持平省份',color: 'yellow'},
+                {start: 0, end: 50, label: '下跌省份',color: 'red'},
+               
+            ],
+            color: ['#eee', '#949fb1', '#f3ce85']
+        },
+    series: [
+        {
+            name: '中国',
+            type: 'map',
+            mapType: 'china',
+            selectedMode : 'multiple',
+            roam: true,  
+            label: {
+                normal: {
+                    show: true
+                },
+                emphasis: {
+                    show: true
+                }
+            },
+            data:[
+                {name:'江苏', value:180,seriesId:1},
+                {name:'上海',value:80,id:2},
+                {name:'安徽', value:40,id:3},
+                {name:'陕西', value:160,id:4},
+                {name:'甘肃', value:20,id:5},
+                {name:'广西', value:20,id:6},
+                {name:'河北', value:70,id:7},
+                {name:'新疆', value:70,id:8},
+                {name:'云南', value:20,id:9},
+            ]
+        }
+    ]
+};;
+if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+}
+myChart.on('click', function(params){
+ <!--alert(params.seriesId);-->
+   window.android.startFunction('1');
+});
+       </script>
+   </body>
+</html>
