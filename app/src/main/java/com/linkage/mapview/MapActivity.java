@@ -19,7 +19,6 @@ import com.linkage.mapview.util.SvgUtil;
 import com.linkage.mapview.view.ColorView;
 import com.linkage.mapview.view.MyMapView;
 import com.linkage.shapeloading.LoadingView;
-import com.linkage.tongji.BaseActivity;
 import com.linkage.tongji.R;
 
 import java.util.ArrayList;
@@ -28,7 +27,7 @@ import java.util.List;
 
 import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 
-public class MapActivity extends BaseActivity {
+public class MapActivity extends AppCompatActivity{
     private MyMapView mapview;
     private provinceAdapter adapter;
     private MyMap myMap;
@@ -38,12 +37,28 @@ public class MapActivity extends BaseActivity {
     private ListView province_listview;
     private HashMap<String, List<MycolorArea>> colorView_hashmap;
     private List<String> list;
+    private Toolbar mToolbar;
+    private ActionBar actionBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_map);
-        setSwipeBackEnable(false);
-        StatusBarUtil.setColor(MapActivity.this, getResources().getColor(R.color.colorMain),0);
+        actionBar  = getSupportActionBar();
+        if(actionBar!=null) {
+            actionBar.hide();
+        }
+        mToolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        StatusBarUtil.setColor(MapActivity.this, getResources().getColor(R.color.colorMain), 0);
+//        }
+
+
         initView();
         //设置颜色渐变条
         setColorView();
@@ -78,9 +93,7 @@ public class MapActivity extends BaseActivity {
                 }
             }
         });
-        setTitle("統計");
     }
-
     private void setListAdapter() {
         list=new ArrayList<>();
         //最后三个是香港，澳门和台湾，不需要

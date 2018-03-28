@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextPaint;
 import android.text.TextUtils;
@@ -50,7 +51,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 
-public class MsgCentreActivity extends BaseActivity implements OnClickListener {
+public class MsgCentreActivity extends AppCompatActivity implements OnClickListener {
 
 	private static final String TAG = MsgCentreActivity.class.getSimpleName();
 
@@ -60,16 +61,27 @@ public class MsgCentreActivity extends BaseActivity implements OnClickListener {
 	private List<MsgBean> exerList;
 	private LoadingView loadingView;
 	private ActionBar actionBar;
-
+	private Toolbar mToolbar;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_msg_centre);
-		setSwipeBackEnable(true);
-		StatusBarUtil.setColor(MsgCentreActivity.this, getResources().getColor(R.color.colorMain),0);
+//		StatusBarUtil.setColor(MsgCentreActivity.this, getResources().getColor(R.color.colorMain),0);
 		loadingView= (LoadingView)findViewById(R.id.loadView);
 		actionBar  = getSupportActionBar();
-		actionBar.hide();
+		if(actionBar!=null) {
+			actionBar.hide();
+		}
+		mToolbar = (Toolbar)findViewById(R.id.toolbar);
+		setSupportActionBar(mToolbar);
+		if (getSupportActionBar() != null) {
+			getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+			getSupportActionBar().setDisplayShowTitleEnabled(false);
+		}
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+		StatusBarUtil.setColor(MsgCentreActivity.this, getResources().getColor(R.color.colorMain), 0);
+//        }
 		setTitle("消息中心");
 //		back = (Button) findViewById(R.id.back);
 		Intent intent =getIntent();
