@@ -72,14 +72,7 @@ public class C {
 
 	private static String generateAuthSignature(String timestamp, Map<String, String> signatureParams) {
         StringBuffer sb = new StringBuffer().append(getSortedString(timestamp, signatureParams));
-        String s = "";
-        try {
-            s = java.net.URLEncoder.encode(sb.toString(), "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-//        System.out.println(s);
-        //LogUtils.e("before sig---", s);
+        String s = sb.toString();
         System.out.println("---C--加密前数据=" + s);
         return s;
 	}
@@ -89,7 +82,7 @@ public class C {
 		Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<String, String> entry = it.next();
-			list.add(entry.getKey() + "=" + entry.getValue());
+			list.add(entry.getKey() + "=" + entry.getValue() + "&");
 		}
 
 		Collections.sort(list);
@@ -99,9 +92,8 @@ public class C {
 			sb.append(item);
 //			System.out.println("---C--params=" + item);
 		}
-		sb.append(timestamp);
 //		sb.append(PropertiesUtil.getString("CLIENT_SECRET"));
-		sb.append(sigkey);
+		sb.append("key=" + sigkey);
 		
 		return sb.toString();
 	}
@@ -126,11 +118,11 @@ public class C {
 	public static void main(String[] args) {
 		String s = "commandtype%3DsendMessageAttachmentextend%3DeF2iNjSVdqYn3FU6piO4925OqGO03tFO3zbobOT7fHQL8G%2FQQ8KqEnw5dZtb+lFvnHHjoPbFddgIN5gZKQy0uqw%3D%3Dorigin%3DaaF2f65547aE8cA0cEf4Ee";
 		String ss = generateSignature(s);
-		
+
 		String timestamp = "123456";
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("username", "abcd");
-		params.put("password", "111111");
+		params.put("username", "abc");
+		params.put("password", "111");
 		params.put("type", "a");
 		String mySig = C.getSig(timestamp, params);
 		System.out.println(mySig);

@@ -79,6 +79,12 @@ public class NetRequest {
         params.put("timestamp", timestamp);
         String sign = C.getSig(timestamp, params);
         params.put("sign", sign);
+        LogUtils.d("--NetRequest--url--" + url);
+        Iterator<Map.Entry<String, String>> entries = params.entrySet().iterator();
+        while (entries.hasNext()) {
+            Map.Entry<String, String> entry = entries.next();
+            LogUtils.d("--NetRequest--params--" + entry.getKey() + "=" + entry.getValue());
+        }
         getInstance().inner_postFormAsync(url, params, tag, callBack);
     }
 
@@ -90,16 +96,16 @@ public class NetRequest {
      * @param callBack data
      * @param tag
      */
-    public static void postJsonRequest(String url, Map<String, String> params, String tag, DataCallBack callBack) {
+    private static void postJsonRequest(String url, Map<String, String> params, String tag, DataCallBack callBack) {
         String timestamp = String.valueOf(System.currentTimeMillis());
         params.put("timestamp", timestamp);
         String sign = C.getSig(timestamp, params);
         params.put("sign", sign);
-        LogUtils.d("--NetRequest--url--", url);
+        LogUtils.d("--NetRequest--url--" + url);
         Iterator<Map.Entry<String, String>> entries = params.entrySet().iterator();
         while (entries.hasNext()) {
             Map.Entry<String, String> entry = entries.next();
-            LogUtils.d("--NetRequest--params--", entry.getKey() + "=" + entry.getValue());
+            LogUtils.d("--NetRequest--params--" + entry.getKey() + "=" + entry.getValue());
         }
         getInstance().inner_postJsonAsync(url, params, tag, callBack);
     }

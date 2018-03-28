@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:id="@+id/common_title"
     android:layout_width="match_parent"
-    android:layout_height="40dp"
+    android:layout_height="50dp"
     android:background="@color/colorMain">
     <ImageButton
         android:id="@+id/title_back"
@@ -28,7 +28,7 @@
         android:marqueeRepeatLimit="marquee_forever"
         android:scrollHorizontally="true"
         android:focusableInTouchMode="true"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textStyle="bold"
         android:textSize="16sp"
         android:text=""/>

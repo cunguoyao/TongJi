@@ -12,4 +12,5 @@ public class Urls {
     public static final String api = web + "/report-client/api";
 
     public static final String login = api + "/login/login";
+    public static final String indexReportList = api + "/report/getIndexReportList";
 }

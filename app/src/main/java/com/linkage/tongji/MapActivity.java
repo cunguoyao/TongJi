@@ -1,15 +1,11 @@
-package com.linkage.mapview;
+package com.linkage.tongji;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.linkage.dragGridView.MainActivity;
 import com.linkage.mapview.adapter.provinceAdapter;
 import com.linkage.mapview.bean.MyMap;
 import com.linkage.mapview.bean.MycolorArea;
@@ -17,17 +13,18 @@ import com.linkage.mapview.util.ColorChangeHelp;
 import com.linkage.mapview.util.SvgUtil;
 import com.linkage.mapview.view.ColorView;
 import com.linkage.mapview.view.MyMapView;
-import com.linkage.shapeloading.LoadingView;
-import com.linkage.tongji.BaseActivity;
-import com.linkage.tongji.R;
+import com.linkage.tongji.bean.User;
+import com.linkage.utils.LogUtils;
+import com.linkage.utils.NetRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
-
 public class MapActivity extends BaseActivity {
+
+    private static final String TAG = MapActivity.class.getName();
+
     private MyMapView mapview;
     private provinceAdapter adapter;
     private MyMap myMap;
@@ -43,6 +40,7 @@ public class MapActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_map);
         setSwipeBackEnable(false);
+        setTitle("概况");
         initView();
         //设置颜色渐变条
         setColorView();
@@ -77,7 +75,7 @@ public class MapActivity extends BaseActivity {
                 }
             }
         });
-        setTitle("概况");
+        fetchUser();
     }
     private void setListAdapter() {
         list=new ArrayList<>();
@@ -127,4 +125,14 @@ public class MapActivity extends BaseActivity {
         mapview.setMap(myMap);
     }
 
+    private void fetchUser() {
+        User user = getAccount();
+        LogUtils.d("---user=" + user.getUserName());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        NetRequest.cancelRequest(TAG);
+    }
 }

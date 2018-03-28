@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
 
     android:orientation="vertical"
-    tools:context="com.linkage.mapview.MapActivity">
+    tools:context=".MapActivity">
 
     <include android:id="@+id/title_layout" layout="@layout/title_layout" />
 

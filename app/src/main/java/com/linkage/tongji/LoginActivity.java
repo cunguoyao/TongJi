@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,12 +26,20 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.linkage.mapview.MapActivity;
+import com.google.gson.Gson;
 import com.linkage.tongji.app.Urls;
+import com.linkage.tongji.bean.User;
 import com.linkage.utils.C;
 import com.linkage.utils.LogUtils;
 import com.linkage.utils.NetRequest;
+import com.linkage.utils.SharedPreferencesUtils;
+import com.linkage.widget.AlertDialog;
+import com.linkage.widget.JellyInterpolator;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -43,16 +52,13 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private static final String TAG = LoginActivity.class.getName();
 
 	private TextView mBtnLogin;
-
 	private View progress;
-
 	private View mInputLayout;
-
 	private float mWidth, mHeight;
-
 	private LinearLayout mName, mPsw;
-
 	private EditText tv_user,tv_pwd;
+	private User user;
+	private boolean autoLogin;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -60,9 +66,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 		setSwipeBackEnable(false);
-//		StatusBarUtil.setColor(LoginActivity.this, getResources().getColor(R.color.colorLogin),0);
-//		StatusBarUtil.setTranslucent(LoginActivity.this,255);
-//		StatusBarUtil.setTransparent(LoginActivity.this);
 		initView();
 	}
 	public void hideKeyboard(IBinder token) {
@@ -76,8 +79,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		mName.setVisibility(View.VISIBLE);
 		mPsw.setVisibility(View.VISIBLE);
 		mBtnLogin.setVisibility(View.VISIBLE);
-
-
 	}
 
 	private void initView() {
@@ -89,45 +90,56 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		tv_user = (EditText) findViewById(R.id.tv_user);
 		tv_pwd= (EditText) findViewById(R.id.tv_pwd);
 
-
 		mBtnLogin.setOnClickListener(this);
 
 		tv_pwd.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-					@Override
-					public boolean onEditorAction(TextView v, int actionId,
-												  KeyEvent event) {
-						if (actionId == EditorInfo.IME_NULL) {
-							hideKeyboard(mPsw.getWindowToken());
-							return true;
-						}
-						return false;
-					}
-				});
-
+			@Override
+			public boolean onEditorAction(TextView v, int actionId,
+										  KeyEvent event) {
+				if (actionId == EditorInfo.IME_NULL) {
+					hideKeyboard(mPsw.getWindowToken());
+					return true;
+				}
+				return false;
+			}
+		});
+		user = getAccount();
+		if(user != null) {
+			tv_user.setText(user.getLoginName());
+			tv_pwd.setText(user.getLoginPass());
+			autoLogin = true;
+			handler.sendEmptyMessageDelayed(1, 1000);
+		}
 	}
 
 
 
 	@Override
 	public void onClick(View v) {
-		mBtnLogin.setVisibility(View.GONE);
-		hideKeyboard(mPsw.getWindowToken());
-		mWidth = mBtnLogin.getMeasuredWidth();
-		mHeight = mBtnLogin.getMeasuredHeight();
-
-
-
-		inputAnimator(mInputLayout, mWidth, mHeight);
-
-
-
+		switch (v.getId()) {
+			case R.id.main_btn_login:
+				String username = tv_user.getText().toString();
+				String password = tv_pwd.getText().toString();
+				if(TextUtils.isEmpty(username)) {
+					Toast.makeText(this, "请输入账号", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				if(TextUtils.isEmpty(password)) {
+					Toast.makeText(this, "请输入密码", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				mBtnLogin.setVisibility(View.GONE);
+				hideKeyboard(mPsw.getWindowToken());
+				mWidth = mBtnLogin.getMeasuredWidth();
+				mHeight = mBtnLogin.getMeasuredHeight();
+				inputAnimator(mInputLayout, mWidth, mHeight);
+				break;
+		}
 	}
 
 
 
 	private void inputAnimator(final View view, float w, float h) {
-
-	
 
 		ValueAnimator animator = ValueAnimator.ofFloat(0, w);
 		animator.addUpdateListener(new AnimatorUpdateListener() {
@@ -156,27 +168,25 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
 			@Override
 			public void onAnimationRepeat(Animator animation) {
-				// TODO Auto-generated method stub
 
 			}
 
 			@Override
 			public void onAnimationEnd(Animator animation) {
-
 				progress.setVisibility(View.VISIBLE);
 				progressAnimator(progress);
 				mInputLayout.setVisibility(View.INVISIBLE);
-				postLogin(tv_user.getText().toString(), tv_pwd.getText().toString());
-				new Handler().postDelayed(new Runnable() {
-					public void run() {
-//						recovery();
-					}
-				}, 2000);
+				if(autoLogin) {
+					login(user.getLoginName(), user.getLoginPass());
+				}else {
+					String username = tv_user.getText().toString();
+					String password = tv_pwd.getText().toString();
+					login(username, C.md5(password));
+				}
 			}
 
 			@Override
 			public void onAnimationCancel(Animator animation) {
-				// TODO Auto-generated method stub
 
 			}
 		});
@@ -194,7 +204,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	}
 
 	/**
-	 * �ָ���ʼ״̬
+	 * 登录成功后
 	 */
 	private void recovery() {
 		progress.setVisibility(View.GONE);
@@ -208,57 +218,134 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		params.rightMargin = 0;
 		mInputLayout.setLayoutParams(params);
 		
-		
 		ObjectAnimator animator2 = ObjectAnimator.ofFloat(mInputLayout, "scaleX", 0.5f,1f );
 		animator2.setDuration(500);
 		animator2.setInterpolator(new AccelerateDecelerateInterpolator());
 		animator2.start();
 
 		Intent intent_sl = new Intent();
-//		intent_sl.setClass(LoginActivity.this, MainActivity.class);
 		intent_sl.setClass(LoginActivity.this, MapActivity.class);
 		startActivity(intent_sl);
-
+		finish();
 	}
 
-
-	private void postLogin(String username, String password) {
+	//login @params:password is after md5
+	private void login(final String username, String password) {
 		Map<String, String> params = new HashMap<>();
 		params.put("user", username);
+		params.put("pwd", password);
+		NetRequest.postFormRequest(Urls.login, params, TAG, new NetRequest.DataCallBack() {
+			@Override
+			public void requestSuccess(String result) {
+				LogUtils.d("--NetRequest--success--" + result);
+				onLoginSuccess(result);
+			}
+
+			@Override
+			public void requestFailure(Request request, IOException e) {
+				LogUtils.d("--NetRequest--fail--");
+				Toast.makeText(LoginActivity.this, "请求失败", Toast.LENGTH_SHORT).show();
+			}
+		});
+    }
+
+	private void modify(String password) {
+		Map<String, String> params = new HashMap<>();
 		params.put("pwd", C.md5(password));
-		NetRequest.postJsonRequest(Urls.login, params, TAG, new NetRequest.DataCallBack() {
+		NetRequest.postFormRequest(Urls.login, params, TAG, new NetRequest.DataCallBack() {
 			@Override
 			public void requestSuccess(String result) throws Exception {
-				LogUtils.d("--NetRequest--success--", result);
+				LogUtils.d("--NetRequest--success--" + result);
+				JSONObject jsonObject = new JSONObject(result);
+				int ret = jsonObject.optInt("ret", -1);
+				if(ret == 1) {
+					popModifyPwdDialog();
+				}else {
+					handler.sendEmptyMessage(0);
+				}
+			}
+
+			@Override
+			public void requestFailure(Request request, IOException e) {
+				LogUtils.d("--NetRequest--fail--");
+				popModifyPwdDialog();
+			}
+		});
+	}
+
+	private void fetchData(String token) {
+		Map<String, String> params = new HashMap<>();
+		params.put("token", token);
+		NetRequest.postFormRequest(Urls.indexReportList, params, TAG, new NetRequest.DataCallBack() {
+			@Override
+			public void requestSuccess(String result) throws Exception {
+				LogUtils.d("--NetRequest--success--" + result);
 				handler.sendEmptyMessage(0);
 			}
 
 			@Override
 			public void requestFailure(Request request, IOException e) {
-				LogUtils.d("--NetRequest--fail--", "");
-				handler.sendEmptyMessage(0);
+				LogUtils.d("--NetRequest--fail--");
 			}
 		});
-    }
+	}
 
+	private void onLoginSuccess(String result) {
+		JSONObject jsonObject = null;
+		try {
+			jsonObject = new JSONObject(result);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			Toast.makeText(LoginActivity.this, "服务器错误", Toast.LENGTH_SHORT).show();
+		}
+		if(jsonObject != null) {
+			int ret = jsonObject.optInt("ret", -1);
+			if (ret == 0) {
+				User user = new Gson().fromJson(jsonObject.optString("data"), User.class);
+				if(user != null) {
+					SharedPreferencesUtils.getInstance(LoginActivity.this, "report-client").setObject("assemble_", user);
+					String token = jsonObject.optJSONObject("data").optString("token");
+					fetchData(token);
+				}
+			} else if (ret == 1) {
+				popModifyPwdDialog();
+			} else {
+				handler.sendEmptyMessage(0);
+			}
+		}
+	}
 
     private Handler handler = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
-            // TODO Auto-generated method stub
-			try {
-				Thread.sleep(3000);
-				recovery();
-			} catch (InterruptedException ex) {
-				// TODO Auto-generated catch block
-				ex.printStackTrace();
+        	switch (msg.what) {
+				case 0:
+					try {
+						Thread.sleep(3000);
+						recovery();
+					} catch (InterruptedException ex) {
+						ex.printStackTrace();
+					}
+					break;
+				case 1:
+					mBtnLogin.performClick();
+					break;
 			}
-
-
         }
 
     };
+
+	private void popModifyPwdDialog() {
+		AlertDialog loginDialog = new AlertDialog(this);
+		loginDialog.builder().setTitle("提示").setMsg("系统检测到您是第一次登录，需要修改密码才能使用")
+				.setPositiveButton("确认", new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+
+					}
+				}).show();
+	}
 
 	@Override
 	protected void onDestroy() {

@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.linkage.tongji.app.BaseApplication;
+import com.linkage.tongji.bean.User;
+import com.linkage.utils.SharedPreferencesUtils;
 import com.linkage.utils.StateBarTranslucentUtils;
 
 import me.imid.swipebacklayout.lib.SwipeBackLayout;
@@ -38,6 +40,11 @@ public class BaseActivity extends SwipeBackActivity {
         if(!BaseApplication.getInstance().getUnSetStateBarColorPage().contains(this.getClass().getName())) {
             StateBarTranslucentUtils.setStateBarColor(this, R.color.colorMain);
         }
+    }
+
+    protected User getAccount() {
+        User user = SharedPreferencesUtils.getInstance(this, "report-client").getObject("assemble_", User.class);
+        return user;
     }
 
     public void setTitle(String title) {

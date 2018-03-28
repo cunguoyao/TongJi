@@ -1,4 +1,4 @@
-package com.linkage.tongji;
+package com.linkage.widget;
 
 import android.view.animation.LinearInterpolator;
 

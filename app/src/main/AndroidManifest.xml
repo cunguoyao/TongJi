@@ -31,10 +31,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.linkage.tongji.ViewPagerActivity"
-         android:theme="@style/AppTheme.NoActionBar"
-            />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.linkage.mapview.MapActivity" android:theme="@style/AppThemeNoTranslucent"
+            android:name=".MapActivity" android:theme="@style/AppThemeNoTranslucent"
             android:screenOrientation="portrait" />
 
 
