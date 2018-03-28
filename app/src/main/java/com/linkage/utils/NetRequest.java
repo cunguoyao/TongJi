@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.Dispatcher;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -55,10 +56,11 @@ public class NetRequest {
      *
      * @param url      url
      * @param params   key value
+     * @param tag
      * @param callBack data
      */
-    public static void getFormRequest(String url, Map<String, String> params, DataCallBack callBack) {
-        getInstance().inner_getFormAsync(url, params, callBack);
+    public static void getFormRequest(String url, Map<String, String> params, String tag, DataCallBack callBack) {
+        getInstance().inner_getFormAsync(url, params, tag, callBack);
     }
 
     /**
@@ -66,10 +68,11 @@ public class NetRequest {
      *
      * @param url      url
      * @param params   key value
+     * @param tag tag
      * @param callBack data
      */
-    public static void postFormRequest(String url, Map<String, String> params, DataCallBack callBack) {
-        getInstance().inner_postFormAsync(url, params, callBack);
+    public static void postFormRequest(String url, Map<String, String> params, String tag, DataCallBack callBack) {
+        getInstance().inner_postFormAsync(url, params, tag, callBack);
     }
 
     /**
@@ -79,7 +82,7 @@ public class NetRequest {
      * @param params   key value
      * @param callBack data
      */
-    public static void postJsonRequest(String url, Map<String, String> params, DataCallBack callBack) {
+    private static void postJsonRequest(String url, Map<String, String> params, DataCallBack callBack) {
         getInstance().inner_postJsonAsync(url, params, callBack);
     }
     //-------------对外提供的方法End--------------------------------
@@ -89,8 +92,9 @@ public class NetRequest {
      *
      * @param url    url
      * @param params key value
+     * @param  tag
      */
-    private void inner_getFormAsync(String url, Map<String, String> params, final DataCallBack callBack) {
+    private void inner_getFormAsync(String url, Map<String, String> params, String tag, final DataCallBack callBack) {
         if (params == null) {
             params = new HashMap<>();
         }
@@ -124,9 +128,10 @@ public class NetRequest {
      *
      * @param url      url
      * @param params   params
+     * @param tag        tag
      * @param callBack callBack
      */
-    private void inner_postFormAsync(String url, Map<String, String> params, final DataCallBack callBack) {
+    private void inner_postFormAsync(String url, Map<String, String> params, String tag, final DataCallBack callBack) {
         RequestBody requestBody;
         if (params == null) {
             params = new HashMap<>();
@@ -153,7 +158,7 @@ public class NetRequest {
         }
         requestBody = builder.build();
         //结果返回
-        final Request request = new Request.Builder().url(url).post(requestBody).build();
+        final Request request = new Request.Builder().tag(tag).url(url).post(requestBody).build();
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -167,7 +172,9 @@ public class NetRequest {
                     String result = response.body().string();
                     deliverDataSuccess(result, callBack);
                 } else {
-                    throw new IOException(response + "");
+                    IOException e = new IOException(response + "");
+                    deliverDataFailure(request, e, callBack);
+                    //throw e;
                 }
             }
         });
@@ -293,5 +300,21 @@ public class NetRequest {
             endUrl.append(entry.getValue());
         }
         return endUrl.toString();
+    }
+
+    public static void cancelRequest(Object tag){
+        Dispatcher dispatcher = okHttpClient.dispatcher();
+        synchronized (dispatcher){
+            for (Call call : dispatcher.queuedCalls()) {
+                if (tag.equals(call.request().tag())) {
+                    call.cancel();
+                }
+            }
+            for (Call call : dispatcher.runningCalls()) {
+                if (tag.equals(call.request().tag())) {
+                    call.cancel();
+                }
+            }
+        }
     }
 }

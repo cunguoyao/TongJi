@@ -29,9 +29,12 @@ import android.widget.TextView;
 
 import com.jaeger.library.StatusBarUtil;
 import com.linkage.mapview.MapActivity;
+import com.linkage.tongji.app.Urls;
 import com.linkage.utils.NetRequest;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -42,6 +45,8 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class LoginActivity extends BaseActivity implements OnClickListener {
+
+	private static final String TAG = LoginActivity.class.getName();
 
 	private TextView mBtnLogin;
 
@@ -225,7 +230,20 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
 
 	private void postLogin() {
-		NetRequest.postFormRequest();
+		Map<String, String> params = new HashMap<>();
+		params.put("user", "liming");
+		params.put("school", "beida");
+		NetRequest.postFormRequest(Urls.login, params, TAG, new NetRequest.DataCallBack() {
+			@Override
+			public void requestSuccess(String result) throws Exception {
+				handler.sendEmptyMessage(0);
+			}
+
+			@Override
+			public void requestFailure(Request request, IOException e) {
+				handler.sendEmptyMessage(0);
+			}
+		});
     }
 
 
@@ -247,4 +265,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
         }
 
     };
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		NetRequest.cancelRequest(TAG);
+	}
 }
