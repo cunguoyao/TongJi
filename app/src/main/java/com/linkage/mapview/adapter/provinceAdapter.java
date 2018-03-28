@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.linkage.tongji.MenuActivity;
 import com.linkage.tongji.MsgCentreActivity;
 import com.linkage.tongji.R;
 import com.linkage.tongji.ViewPagerActivity;
@@ -84,7 +85,7 @@ public class provinceAdapter extends BaseAdapter{
             @Override
             public void onClick(View v) {
                 Intent intent_sl = new Intent();
-                intent_sl.setClass(context, MsgCentreActivity.class);
+                intent_sl.setClass(context, MenuActivity.class);
                 context.startActivity(intent_sl);
 
             }

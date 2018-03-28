@@ -7,33 +7,29 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.jaeger.library.StatusBarUtil;
-import com.linkage.dragGridView.MainActivity;
 import com.linkage.mapview.MapActivity;
-import com.linkage.tongji.R;
+import com.linkage.utils.NetRequest;
 
 import java.io.IOException;
 
@@ -45,7 +41,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class LoginActivity extends Activity implements OnClickListener {
+public class LoginActivity extends BaseActivity implements OnClickListener {
 
 	private TextView mBtnLogin;
 
@@ -61,9 +57,10 @@ public class LoginActivity extends Activity implements OnClickListener {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
+		setSwipeBackEnable(false);
 //		StatusBarUtil.setColor(LoginActivity.this, getResources().getColor(R.color.colorLogin),0);
 //		StatusBarUtil.setTranslucent(LoginActivity.this,255);
 //		StatusBarUtil.setTransparent(LoginActivity.this);
@@ -228,39 +225,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 
 
 	private void postLogin() {
-        try {
-            String url = "https://www.baidu.com";
-            OkHttpClient client = new OkHttpClient();
-            RequestBody formBody = new FormBody.Builder()
-                    .add("name", "liming")
-                    .add("school", "beida")
-                    .build();
-
-            Request request = new Request.Builder()
-                    .url(url)
-                    .post(formBody)
-                    .build();
-
-            Call call = client.newCall(request);
-            call.enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-					handler.sendEmptyMessage(0);
-
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-					handler.sendEmptyMessage(0);
-//                    Intent intent_sl = new Intent();
-//                    intent_sl.setClass(LoginActivity.this, MainActivity.class);
-//                    startActivity(intent_sl);
-                }
-            });
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+		NetRequest.postFormRequest();
     }
 
 

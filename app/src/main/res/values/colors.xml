@@ -5,4 +5,8 @@
     <color name="colorMain">#00A08D</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="line">#c6c6c6</color>
+    <color name="black">#000000</color>
+    <color name="c6">#c6c6c6</color>
 </resources>

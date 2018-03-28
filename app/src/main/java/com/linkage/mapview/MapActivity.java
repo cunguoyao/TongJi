@@ -19,6 +19,7 @@ import com.linkage.mapview.util.SvgUtil;
 import com.linkage.mapview.view.ColorView;
 import com.linkage.mapview.view.MyMapView;
 import com.linkage.shapeloading.LoadingView;
+import com.linkage.tongji.BaseActivity;
 import com.linkage.tongji.R;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ import java.util.List;
 
 import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 
-public class MapActivity extends SwipeBackActivity {
+public class MapActivity extends BaseActivity {
     private MyMapView mapview;
     private provinceAdapter adapter;
     private MyMap myMap;
@@ -37,18 +38,12 @@ public class MapActivity extends SwipeBackActivity {
     private ListView province_listview;
     private HashMap<String, List<MycolorArea>> colorView_hashmap;
     private List<String> list;
-    private ActionBar actionBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_map);
-        actionBar  = getSupportActionBar();
-        actionBar.hide();
-
-
+        setSwipeBackEnable(false);
         StatusBarUtil.setColor(MapActivity.this, getResources().getColor(R.color.colorMain),0);
-
-
         initView();
         //设置颜色渐变条
         setColorView();
@@ -83,7 +78,9 @@ public class MapActivity extends SwipeBackActivity {
                 }
             }
         });
+        setTitle("統計");
     }
+
     private void setListAdapter() {
         list=new ArrayList<>();
         //最后三个是香港，澳门和台湾，不需要

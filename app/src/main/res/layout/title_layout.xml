@@ -1,25 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:id="@+id/common_title"
     android:layout_width="match_parent"
-    android:layout_height="50dip"
-    android:gravity="center_vertical"
-    android:padding="10dip" >
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/back" />
-
-    <TextView 
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#ffffff"
-        android:layout_alignParentRight="true"
+    android:layout_height="40dp"
+    android:background="@color/colorMain">
+    <ImageButton
+        android:id="@+id/title_back"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:textSize="20sp"
-        android:text="Sign up"
-        
-        />
-    
-    
+        android:background="@drawable/ic_back_bg"
+        android:src="@drawable/back">
+    </ImageButton>
+    <TextView
+        android:id="@+id/title"
+        android:layout_toRightOf="@+id/title_back"
+        android:layout_toLeftOf="@+id/title_menu1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
+        android:focusableInTouchMode="true"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:text=""/>
+    <Button
+        android:id="@+id/title_menu1"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:background="@null"
+        android:textColor="@color/c6"
+        android:textSize="15sp"
+        android:text=""
+        android:layout_centerVertical="true"/>
+
 </RelativeLayout>

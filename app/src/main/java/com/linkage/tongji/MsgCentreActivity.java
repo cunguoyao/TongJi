@@ -50,7 +50,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 
-public class MsgCentreActivity extends SwipeBackActivity implements OnClickListener {
+public class MsgCentreActivity extends BaseActivity implements OnClickListener {
 
 	private static final String TAG = MsgCentreActivity.class.getSimpleName();
 
@@ -65,6 +65,7 @@ public class MsgCentreActivity extends SwipeBackActivity implements OnClickListe
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_msg_centre);
+		setSwipeBackEnable(true);
 		StatusBarUtil.setColor(MsgCentreActivity.this, getResources().getColor(R.color.colorMain),0);
 		loadingView= (LoadingView)findViewById(R.id.loadView);
 		actionBar  = getSupportActionBar();

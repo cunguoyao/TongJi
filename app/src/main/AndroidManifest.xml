@@ -10,7 +10,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity"  android:screenOrientation="portrait">
+        <activity android:name=".LoginActivity" android:theme="@style/AppTheme.NoActionBar" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"
                     android:windowSoftInputMode="stateVisible|adjustResize"
@@ -25,6 +25,9 @@
             android:name="com.linkage.dragGridView.MainActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.linkage.tongji.MenuActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.linkage.tongji.MsgCentreActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -32,7 +35,7 @@
          android:theme="@style/AppTheme.NoActionBar"
             />
         <activity
-            android:name="com.linkage.mapview.MapActivity"
+            android:name="com.linkage.mapview.MapActivity" android:theme="@style/AppThemeNoTranslucent"
             android:screenOrientation="portrait" />
 
 
