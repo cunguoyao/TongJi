@@ -27,7 +27,7 @@ import java.util.List;
 
 import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 
-public class MapActivity extends SwipeBackActivity {
+public class MapActivity extends AppCompatActivity{
     private MyMapView mapview;
     private provinceAdapter adapter;
     private MyMap myMap;
@@ -37,16 +37,26 @@ public class MapActivity extends SwipeBackActivity {
     private ListView province_listview;
     private HashMap<String, List<MycolorArea>> colorView_hashmap;
     private List<String> list;
+    private Toolbar mToolbar;
     private ActionBar actionBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_map);
         actionBar  = getSupportActionBar();
-        actionBar.hide();
+        if(actionBar!=null) {
+            actionBar.hide();
+        }
+        mToolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
 
-
-        StatusBarUtil.setColor(MapActivity.this, getResources().getColor(R.color.colorMain),0);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        StatusBarUtil.setColor(MapActivity.this, getResources().getColor(R.color.colorMain), 0);
+//        }
 
 
         initView();
