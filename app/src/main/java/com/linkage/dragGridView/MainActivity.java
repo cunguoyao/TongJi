@@ -37,7 +37,6 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.VideoView;
 
-import com.jaeger.library.StatusBarUtil;
 import com.linkage.shapeloading.LoadingView;
 import com.linkage.tongji.LoginActivity;
 import com.linkage.tongji.MsgCentreActivity;
@@ -79,7 +78,6 @@ public class MainActivity extends SwipeBackActivity implements OnItemClickListen
 		loadingView= (LoadingView)findViewById(R.id.loadView);
 
 
-		StatusBarUtil.setColor(MainActivity.this, getResources().getColor(R.color.colorMain),0);
 //		mToolbar.setTitle("统计页面");
 
 //		DragGridView mDragGridView = (DragGridView)findViewById(R.id.dragGridView);

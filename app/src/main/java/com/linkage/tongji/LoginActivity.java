@@ -19,7 +19,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -27,22 +26,17 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.jaeger.library.StatusBarUtil;
 import com.linkage.mapview.MapActivity;
 import com.linkage.tongji.app.Urls;
+import com.linkage.utils.C;
+import com.linkage.utils.LogUtils;
 import com.linkage.utils.NetRequest;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class LoginActivity extends BaseActivity implements OnClickListener {
 
@@ -69,7 +63,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 //		StatusBarUtil.setColor(LoginActivity.this, getResources().getColor(R.color.colorLogin),0);
 //		StatusBarUtil.setTranslucent(LoginActivity.this,255);
 //		StatusBarUtil.setTransparent(LoginActivity.this);
-		StatusBarUtil.setTransparent(this);
 		initView();
 	}
 	public void hideKeyboard(IBinder token) {
@@ -173,7 +166,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				progress.setVisibility(View.VISIBLE);
 				progressAnimator(progress);
 				mInputLayout.setVisibility(View.INVISIBLE);
-				postLogin();
+				postLogin(tv_user.getText().toString(), tv_pwd.getText().toString());
 				new Handler().postDelayed(new Runnable() {
 					public void run() {
 //						recovery();
@@ -229,18 +222,20 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	}
 
 
-	private void postLogin() {
+	private void postLogin(String username, String password) {
 		Map<String, String> params = new HashMap<>();
-		params.put("user", "liming");
-		params.put("school", "beida");
-		NetRequest.postFormRequest(Urls.login, params, TAG, new NetRequest.DataCallBack() {
+		params.put("user", username);
+		params.put("pwd", C.md5(password));
+		NetRequest.postJsonRequest(Urls.login, params, TAG, new NetRequest.DataCallBack() {
 			@Override
 			public void requestSuccess(String result) throws Exception {
+				LogUtils.d("--NetRequest--success--", result);
 				handler.sendEmptyMessage(0);
 			}
 
 			@Override
 			public void requestFailure(Request request, IOException e) {
+				LogUtils.d("--NetRequest--fail--", "");
 				handler.sendEmptyMessage(0);
 			}
 		});
@@ -252,7 +247,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
         @Override
         public void handleMessage(Message msg) {
             // TODO Auto-generated method stub
-
 			try {
 				Thread.sleep(3000);
 				recovery();

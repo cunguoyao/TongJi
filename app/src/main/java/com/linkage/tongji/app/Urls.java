@@ -8,8 +8,8 @@ public class Urls {
 
     public static final int pageSize = 10;
 
-    public static final String web = "http://www.baidu.com";
-    public static final String api = web + "/index.php";
+    public static final String web = "http://221.130.6.210:9822";
+    public static final String api = web + "/report-client/api";
 
-    public static final String login = api + "";
+    public static final String login = api + "/login/login";
 }

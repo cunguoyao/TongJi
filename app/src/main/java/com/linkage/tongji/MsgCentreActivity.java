@@ -28,7 +28,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.jaeger.library.StatusBarUtil;
 import com.linkage.dragGridView.MainActivity;
 import com.linkage.shapeloading.LoadingView;
 import com.linkage.tongji.bean.MsgBean;
@@ -80,7 +79,6 @@ public class MsgCentreActivity extends AppCompatActivity implements OnClickListe
 		}
 
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-		StatusBarUtil.setColor(MsgCentreActivity.this, getResources().getColor(R.color.colorMain), 0);
 //        }
 		setTitle("消息中心");
 //		back = (Button) findViewById(R.id.back);

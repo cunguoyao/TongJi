@@ -3,8 +3,11 @@ package com.linkage.utils;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.google.gson.Gson;
+
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -72,6 +75,10 @@ public class NetRequest {
      * @param callBack data
      */
     public static void postFormRequest(String url, Map<String, String> params, String tag, DataCallBack callBack) {
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        params.put("timestamp", timestamp);
+        String sign = C.getSig(timestamp, params);
+        params.put("sign", sign);
         getInstance().inner_postFormAsync(url, params, tag, callBack);
     }
 
@@ -81,9 +88,20 @@ public class NetRequest {
      * @param url      url
      * @param params   key value
      * @param callBack data
+     * @param tag
      */
-    private static void postJsonRequest(String url, Map<String, String> params, DataCallBack callBack) {
-        getInstance().inner_postJsonAsync(url, params, callBack);
+    public static void postJsonRequest(String url, Map<String, String> params, String tag, DataCallBack callBack) {
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        params.put("timestamp", timestamp);
+        String sign = C.getSig(timestamp, params);
+        params.put("sign", sign);
+        LogUtils.d("--NetRequest--url--", url);
+        Iterator<Map.Entry<String, String>> entries = params.entrySet().iterator();
+        while (entries.hasNext()) {
+            Map.Entry<String, String> entry = entries.next();
+            LogUtils.d("--NetRequest--params--", entry.getKey() + "=" + entry.getValue());
+        }
+        getInstance().inner_postJsonAsync(url, params, tag, callBack);
     }
     //-------------对外提供的方法End--------------------------------
 
@@ -186,11 +204,12 @@ public class NetRequest {
      * @param url      url
      * @param callBack 成功或失败回调
      * @param params     params
+     * @param tag
      */
-    private void inner_postJsonAsync(String url, Map<String, String> params,final DataCallBack callBack) {
+    private void inner_postJsonAsync(String url, Map<String, String> params, String tag, final DataCallBack callBack) {
         // 将map转换成json,需要引入Gson包
-        String mapToJson = /*new Gson().toJson(params);*/"";
-        final Request request = buildJsonPostRequest(url, mapToJson);
+        String mapToJson = new Gson().toJson(params);
+        final Request request = buildJsonPostRequest(url, tag, mapToJson);
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -204,7 +223,9 @@ public class NetRequest {
                     String result = response.body().string();
                     deliverDataSuccess(result, callBack);
                 } else {
-                    throw new IOException(response + "");
+                    IOException e = new IOException(response + "");
+                    deliverDataFailure(request, e, callBack);
+                    //throw e;
                 }
             }
         });
@@ -215,11 +236,12 @@ public class NetRequest {
      *
      * @param url  url
      * @param json json
+     * @param tag
      * @return requestBody
      */
-    private Request buildJsonPostRequest(String url, String json) {
+    private Request buildJsonPostRequest(String url, String tag, String json) {
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
-        return new Request.Builder().url(url).post(requestBody).build();
+        return new Request.Builder().tag(tag).url(url).post(requestBody).build();
     }
 
     /**

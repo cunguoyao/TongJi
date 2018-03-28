@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 
-import com.jaeger.library.StatusBarUtil;
 import com.linkage.adapter.MenuAdapter;
 import com.linkage.shapeloading.LoadingView;
 import com.linkage.tongji.bean.MenuBean;
@@ -29,9 +28,8 @@ public class MenuActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
         setSwipeBackEnable(true);
-        StatusBarUtil.setColor(this, getResources().getColor(R.color.colorMain),0);
         loadingView = (LoadingView)findViewById(R.id.loadView);
-        setTitle("菜單");
+        setTitle("菜单");
         gridView = (MyGridView)findViewById(R.id.gridView);
         fetchMenuData();
     }
