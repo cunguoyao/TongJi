@@ -14,6 +14,16 @@ public class IndexReport implements Serializable {
     private long userTotal;
     private long userIncrease;
 
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    private String color;
+
     public int getProvinceId() {
         return provinceId;
     }

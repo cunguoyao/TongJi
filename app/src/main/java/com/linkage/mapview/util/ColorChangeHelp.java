@@ -88,7 +88,7 @@ public static String province_datas[]={
         for (int i = 0; i < lists.size(); i++) {
             IndexReport info = (IndexReport)lists.get(i);
 
-            hashmap.put(info.getProvinceName(),"#abc123");
+            hashmap.put(info.getProvinceName(),info.getColor());
         }
 
         for (Province p:mymap.getProvinceslist()){
