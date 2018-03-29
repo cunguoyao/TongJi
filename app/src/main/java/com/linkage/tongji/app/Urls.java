@@ -11,6 +11,7 @@ public class Urls {
     public static final String web = "http://221.130.6.210:9822";
     public static final String api = web + "/report-client/api";
 
+    public static final String version = api + "/login/login";
     public static final String login = api + "/login/login";
     public static final String indexReportList = api + "/report/getIndexReportList";
 }

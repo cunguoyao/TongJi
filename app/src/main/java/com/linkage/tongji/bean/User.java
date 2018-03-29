@@ -17,6 +17,7 @@ public class User implements Serializable {
     private String email;
     private String token;
     private String tokenTime;
+    private int pass_flag;//是否首次登录 0是 1不是
 
     public int getId() {
         return id;
@@ -90,5 +91,11 @@ public class User implements Serializable {
         this.tokenTime = tokenTime;
     }
 
+    public int getPass_flag() {
+        return pass_flag;
+    }
 
+    public void setPass_flag(int pass_flag) {
+        this.pass_flag = pass_flag;
+    }
 }

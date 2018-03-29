@@ -139,15 +139,14 @@ public class LogUtils {
         // 获取生日输出行数
         int lineNumber = stackTraceElement.getLineNumber();
 
-        logInfoStringBuilder.append("[ ");
-        /*logInfoStringBuilder.append("threadID=" + threadID).append(SEPARATOR);
+        /*logInfoStringBuilder.append("[ ");
+        logInfoStringBuilder.append("threadID=" + threadID).append(SEPARATOR);
         logInfoStringBuilder.append("threadName=" + threadName).append(SEPARATOR);
         logInfoStringBuilder.append("fileName=" + fileName).append(SEPARATOR);
         logInfoStringBuilder.append("className=" + className).append(SEPARATOR);
         logInfoStringBuilder.append("methodName=" + methodName).append(SEPARATOR);
-        logInfoStringBuilder.append("lineNumber=" + lineNumber);*/
-        logInfoStringBuilder.append("className=" + className).append(SEPARATOR);
-        logInfoStringBuilder.append(" ] ");
+        logInfoStringBuilder.append("lineNumber=" + lineNumber);
+        logInfoStringBuilder.append(" ] ");*/
         return logInfoStringBuilder.toString();
     }
 }

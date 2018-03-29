@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,6 +23,7 @@ public class AlertDialog {
 	private LinearLayout lLayout_bg;
 	private TextView txt_title;
 	private TextView txt_msg;
+	private EditText input;
 	private Button btn_neg;
 	private Button btn_pos;
 	private ImageView img_line;
@@ -49,6 +51,7 @@ public class AlertDialog {
 		txt_title.setVisibility(View.GONE);
 		txt_msg = (TextView) view.findViewById(R.id.txt_msg);
 		txt_msg.setVisibility(View.GONE);
+		input = (EditText) view.findViewById(R.id.input);
 		btn_neg = (Button) view.findViewById(R.id.btn_neg);
 		btn_neg.setVisibility(View.GONE);
 		btn_pos = (Button) view.findViewById(R.id.btn_pos);
@@ -90,6 +93,10 @@ public class AlertDialog {
 	public AlertDialog setCancelable(boolean cancel) {
 		dialog.setCancelable(cancel);
 		return this;
+	}
+
+	public EditText getEditText() {
+		return input;
 	}
 
 	public AlertDialog setPositiveButton(String text,

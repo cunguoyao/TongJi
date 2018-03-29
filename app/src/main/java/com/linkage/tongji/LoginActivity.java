@@ -20,6 +20,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -55,10 +56,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
 	private static final String TAG = LoginActivity.class.getName();
 
+	AnimatorSet set;
 	private TextView mBtnLogin;
 	private View progress;
 	private View mInputLayout;
-	private float mWidth, mHeight;
+	private int mInputLayoutLeftMargin, mInputLayoutRightMargin;
 	private LinearLayout mName, mPsw;
 	private EditText tv_user,tv_pwd;
 	private User user;
@@ -93,7 +95,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		mPsw = (LinearLayout) findViewById(R.id.input_layout_psw);
 		tv_user = (EditText) findViewById(R.id.tv_user);
 		tv_pwd= (EditText) findViewById(R.id.tv_pwd);
-
+		ViewGroup.MarginLayoutParams params = (MarginLayoutParams)mInputLayout.getLayoutParams();
+		mInputLayoutLeftMargin = params.leftMargin;
+		mInputLayoutRightMargin = params.rightMargin;
 		mBtnLogin.setOnClickListener(this);
 
 		tv_pwd.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -112,7 +116,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			tv_user.setText(user.getLoginName());
 			tv_pwd.setText(user.getLoginPass());
 			autoLogin = true;
-			handler.sendEmptyMessageDelayed(1, 1000);
+			handler.sendEmptyMessageDelayed(1, 100);
 		}
 	}
 
@@ -132,9 +136,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				}
 				mBtnLogin.setVisibility(View.GONE);
 				hideKeyboard(mPsw.getWindowToken());
-				mWidth = mBtnLogin.getMeasuredWidth();
-				mHeight = mBtnLogin.getMeasuredHeight();
-				inputAnimator(mInputLayout, mWidth, mHeight);
+				float loginBtnWidth = mBtnLogin.getMeasuredWidth();
+				float loginBtnHeight = mBtnLogin.getMeasuredHeight();
+				inputAnimator(mInputLayout, loginBtnWidth, loginBtnHeight);
 				break;
 		}
 	}
@@ -155,8 +159,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				view.setLayoutParams(params);
 			}
 		});
-		AnimatorSet set = new AnimatorSet();
-		ObjectAnimator animator2 = ObjectAnimator.ofFloat(mInputLayout, "scaleX", 1f, 0.2f);
+		set = new AnimatorSet();
+		ObjectAnimator animator2 = ObjectAnimator.ofFloat(mInputLayout, "scaleX", 0.2f, 1f);
 		set.setDuration(300);
 		set.setInterpolator(new AccelerateDecelerateInterpolator());
 		set.playTogether(animator, animator2);
@@ -220,7 +224,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		params.rightMargin = 0;
 		mInputLayout.setLayoutParams(params);
 		
-		ObjectAnimator animator2 = ObjectAnimator.ofFloat(mInputLayout, "scaleX", 0.5f,1f );
+		ObjectAnimator animator2 = ObjectAnimator.ofFloat(mInputLayout, "scaleX", 1f,0.2f );
 		animator2.setDuration(500);
 		animator2.setInterpolator(new AccelerateDecelerateInterpolator());
 		animator2.start();
@@ -249,10 +253,21 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			@Override
 			public void requestFailure(Request request, IOException e) {
 				LogUtils.d("--NetRequest--fail--");
+				reDisplayFormWhenFailed();
 				Toast.makeText(LoginActivity.this, "请求失败", Toast.LENGTH_SHORT).show();
 			}
 		});
     }
+
+    private void reDisplayFormWhenFailed() {
+		progress.setVisibility(View.INVISIBLE);
+		mInputLayout.setVisibility(View.VISIBLE);
+		mBtnLogin.setVisibility(View.VISIBLE);
+		ViewGroup.MarginLayoutParams params = (MarginLayoutParams) mInputLayout.getLayoutParams();
+		params.leftMargin = mInputLayoutLeftMargin;
+		params.rightMargin = mInputLayoutRightMargin;
+		mInputLayout.setLayoutParams(params);
+	}
 
     //首次登录修改密码
 	private void modify(String password) {
@@ -318,12 +333,14 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			if (ret == 0) {
 				User user = new Gson().fromJson(jsonObject.optString("data"), User.class);
 				if(user != null) {
-					SharedPreferencesUtils.getInstance(LoginActivity.this, "report-client").setObject("assemble_", user);
-					String token = jsonObject.optJSONObject("data").optString("token");
-					fetchIndexReport(token);
+//					if(user.getPass_flag() == 0) {//首次登录，未修改密码
+//						popModifyPwdDialog();
+//					}else {
+						SharedPreferencesUtils.getInstance(LoginActivity.this, "report-client").setObject("assemble_", user);
+						String token = jsonObject.optJSONObject("data").optString("token");
+						fetchIndexReport(token);
+//					}
 				}
-			} else if (ret == 1) {
-				popModifyPwdDialog();
 			} else {
 				String msg = jsonObject.optString("msg");
 				if(TextUtils.isEmpty(msg)) {
