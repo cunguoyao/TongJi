@@ -1,5 +1,6 @@
 package com.linkage.tongji;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.linkage.mapview.util.ColorChangeHelp;
 import com.linkage.mapview.util.SvgUtil;
 import com.linkage.mapview.view.ColorView;
 import com.linkage.mapview.view.MyMapView;
+import com.linkage.tongji.bean.IndexReport;
 import com.linkage.tongji.bean.User;
 import com.linkage.utils.LogUtils;
 import com.linkage.utils.NetRequest;
@@ -34,6 +36,7 @@ public class MapActivity extends BaseActivity {
     private ListView province_listview;
     private HashMap<String, List<MycolorArea>> colorView_hashmap;
     private List<String> list;
+    private ArrayList<IndexReport> indexReports;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,9 @@ public class MapActivity extends BaseActivity {
         setContentView(R.layout.activity_main_map);
         setSwipeBackEnable(false);
         setTitle("概况");
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        indexReports = (ArrayList<IndexReport>)bundle.getSerializable("IndexReportList");
         initView();
         //设置颜色渐变条
         setColorView();

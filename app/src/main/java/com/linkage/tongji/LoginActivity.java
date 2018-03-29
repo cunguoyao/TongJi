@@ -29,7 +29,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.linkage.tongji.app.Urls;
+import com.linkage.tongji.bean.IndexReport;
 import com.linkage.tongji.bean.User;
 import com.linkage.utils.C;
 import com.linkage.utils.LogUtils;
@@ -42,7 +44,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.Request;
@@ -111,8 +115,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			handler.sendEmptyMessageDelayed(1, 1000);
 		}
 	}
-
-
 
 	@Override
 	public void onClick(View v) {
@@ -204,9 +206,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	}
 
 	/**
-	 * 登录成功后
+	 * 登录成功后跳转页面
 	 */
-	private void recovery() {
+	private void startIndexReportPage(ArrayList<IndexReport> list) {
 		progress.setVisibility(View.GONE);
 //		mInputLayout.setVisibility(View.VISIBLE);
 //		mName.setVisibility(View.VISIBLE);
@@ -225,6 +227,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
 		Intent intent_sl = new Intent();
 		intent_sl.setClass(LoginActivity.this, MapActivity.class);
+		Bundle b = new Bundle();
+		b.putSerializable("IndexReportList", list);
+		intent_sl.putExtras(b);
 		startActivity(intent_sl);
 		finish();
 	}
@@ -249,6 +254,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		});
     }
 
+    //首次登录修改密码
 	private void modify(String password) {
 		Map<String, String> params = new HashMap<>();
 		params.put("pwd", C.md5(password));
@@ -261,7 +267,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				if(ret == 1) {
 					popModifyPwdDialog();
 				}else {
-					handler.sendEmptyMessage(0);
+
 				}
 			}
 
@@ -273,14 +279,23 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		});
 	}
 
-	private void fetchData(String token) {
+	//获取首页数据
+	private void fetchIndexReport(String token) {
 		Map<String, String> params = new HashMap<>();
 		params.put("token", token);
 		NetRequest.postFormRequest(Urls.indexReportList, params, TAG, new NetRequest.DataCallBack() {
 			@Override
 			public void requestSuccess(String result) throws Exception {
 				LogUtils.d("--NetRequest--success--" + result);
-				handler.sendEmptyMessage(0);
+				JSONObject jsonObject = new JSONObject(result);
+				int ret = jsonObject.optInt("ret", -1);
+				if(ret == 0) {
+					ArrayList<IndexReport> reports = new Gson().fromJson(jsonObject.optString("data"), new TypeToken<ArrayList<IndexReport>>() {}.getType());
+					Message message = new Message();
+					message.obj = reports;
+					message.what = 0;
+					handler.sendMessage(message);
+				}
 			}
 
 			@Override
@@ -296,7 +311,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			jsonObject = new JSONObject(result);
 		} catch (JSONException e) {
 			e.printStackTrace();
-			Toast.makeText(LoginActivity.this, "服务器错误", Toast.LENGTH_SHORT).show();
+			Toast.makeText(LoginActivity.this, "服务器返回错误", Toast.LENGTH_SHORT).show();
 		}
 		if(jsonObject != null) {
 			int ret = jsonObject.optInt("ret", -1);
@@ -305,12 +320,16 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				if(user != null) {
 					SharedPreferencesUtils.getInstance(LoginActivity.this, "report-client").setObject("assemble_", user);
 					String token = jsonObject.optJSONObject("data").optString("token");
-					fetchData(token);
+					fetchIndexReport(token);
 				}
 			} else if (ret == 1) {
 				popModifyPwdDialog();
 			} else {
-				handler.sendEmptyMessage(0);
+				String msg = jsonObject.optString("msg");
+				if(TextUtils.isEmpty(msg)) {
+					msg = "服务器返回失败";
+				}
+				Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_SHORT).show();
 			}
 		}
 	}
@@ -321,12 +340,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
         public void handleMessage(Message msg) {
         	switch (msg.what) {
 				case 0:
-					try {
-						Thread.sleep(3000);
-						recovery();
-					} catch (InterruptedException ex) {
-						ex.printStackTrace();
-					}
+					ArrayList<IndexReport> list = (ArrayList<IndexReport>)msg.obj;
+					startIndexReportPage(list);
 					break;
 				case 1:
 					mBtnLogin.performClick();
