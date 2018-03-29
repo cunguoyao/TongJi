@@ -60,7 +60,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="本周增长率"
+            android:text="用户总数"
             android:textColor="#000000"
             android:textSize="12sp" />
 
@@ -69,7 +69,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="累计增长率"
+            android:text="环比绝对数"
             android:textColor="#000000"
             android:textSize="12sp" />
 
@@ -78,10 +78,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="发电利用小时"
+            android:text="更新时间"
             android:textColor="#000000"
-            android:textSize="12sp"
-            android:visibility="gone" />
+            android:textSize="12sp" />
 
         <TextView
             android:layout_width="0dp"

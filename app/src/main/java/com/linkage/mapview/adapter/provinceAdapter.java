@@ -8,25 +8,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
 import com.linkage.tongji.MenuActivity;
-import com.linkage.tongji.MsgCentreActivity;
 import com.linkage.tongji.R;
-import com.linkage.tongji.ViewPagerActivity;
+import com.linkage.tongji.bean.IndexReport;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by Vmmet on 2016/10/10.
  */
 public class provinceAdapter extends BaseAdapter{
     private Context context;
-    private List<String> list;
+    private ArrayList<IndexReport> list;
     private int position;
-    public provinceAdapter(Context context, List<String> list){
+
+    public provinceAdapter(Context context, ArrayList<IndexReport> list){
         this.context=context;
         this.list=list;
     }
@@ -41,7 +40,7 @@ public class provinceAdapter extends BaseAdapter{
         return list.size();
     }
     @Override
-    public Object getItem(int i) {
+    public IndexReport getItem(int i) {
         return list.get(i);
     }
     @Override
@@ -51,31 +50,24 @@ public class provinceAdapter extends BaseAdapter{
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         ViewHolder viewHolder;
+        IndexReport item = getItem(i);
         if (view == null) {
             view = LayoutInflater.from(context).inflate(
                     R.layout.listview_province_item, null);
             viewHolder = new ViewHolder();
-            viewHolder.ll = (LinearLayout) view
-                    .findViewById(R.id.ll);
-            viewHolder.province_name = (TextView) view
-                    .findViewById(R.id.province_name);
-            viewHolder.province_elec_rise = (TextView) view
-                    .findViewById(R.id.province_elec_rise);
-            viewHolder.province_accumulative_rise = (TextView) view
-                    .findViewById(R.id.province_accumulative_rise);
-            viewHolder.province_elec_hours = (TextView) view
-                    .findViewById(R.id.province_elec_hours);
-            viewHolder.province_accumulative_hours = (TextView) view
-                    .findViewById(R.id.province_accumulative_hours);
+            viewHolder.ll = (LinearLayout) view.findViewById(R.id.ll);
+            viewHolder.province_name = (TextView) view.findViewById(R.id.province_name);
+            viewHolder.province_user_total = (TextView) view.findViewById(R.id.province_user_total);
+            viewHolder.province_user_increase = (TextView) view.findViewById(R.id.province_user_increase);
+            viewHolder.update_date = (TextView) view.findViewById(R.id.update_date);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
-        viewHolder.province_name.setText(list.get(i).split("_")[0]);
-        viewHolder.province_elec_rise.setText(list.get(i).split("_")[1]+"%");
-        viewHolder.province_accumulative_rise.setText(list.get(i).split("_")[2]+"%");
-        viewHolder.province_elec_hours.setText(list.get(i).split("_")[3]);
-        viewHolder.province_accumulative_hours.setText(list.get(i).split("_")[4]);
+        viewHolder.province_name.setText(item.getProvinceName());
+        viewHolder.province_user_total.setText(item.getUserTotal()+"");
+        viewHolder.province_user_increase.setText(item.getUserIncrease()+"");
+        viewHolder.update_date.setText(item.getCreateTime());
         if (i==position){
             viewHolder.province_name.setTextColor(Color.RED);
         }else{
@@ -93,9 +85,8 @@ public class provinceAdapter extends BaseAdapter{
         return view;
     }
     private class ViewHolder {
-        TextView province_name,province_elec_rise,
-                province_accumulative_rise,province_elec_hours,
-                province_accumulative_hours;
+        TextView province_name,province_user_total,
+                province_user_increase,update_date;
         LinearLayout ll;
     }
 }

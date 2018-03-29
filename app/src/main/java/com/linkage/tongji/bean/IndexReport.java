@@ -10,7 +10,7 @@ public class IndexReport implements Serializable {
 
     private int provinceId;
     private String provinceName;
-    private long createTime;
+    private String createTime;
     private long userTotal;
     private long userIncrease;
 
@@ -30,11 +30,11 @@ public class IndexReport implements Serializable {
         this.provinceName = provinceName;
     }
 
-    public long getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(long createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 

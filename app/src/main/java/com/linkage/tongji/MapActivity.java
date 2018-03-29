@@ -89,7 +89,7 @@ public class MapActivity extends BaseActivity {
         for (int i=0;i<ColorChangeHelp.province_datas.length;i++){
             list.add(ColorChangeHelp.province_datas[i]);
         }
-        adapter = new provinceAdapter(this, list);
+        adapter = new provinceAdapter(this, indexReports);
         province_listview.setAdapter(adapter);
     }
 
