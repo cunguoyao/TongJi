@@ -53,7 +53,8 @@ public class MapActivity extends BaseActivity {
         //初始化map
         initMap();
         //初始化map各省份颜色
-        ColorChangeHelp.changeMapColors(myMap,ColorChangeHelp.nameStrings[0]);
+//        ColorChangeHelp.changeMapColors(myMap,ColorChangeHelp.nameStrings[0]);
+        ColorChangeHelp.setMapClors(myMap,indexReports);
         mapview.chingeMapColors();
         //listview
         setListAdapter();

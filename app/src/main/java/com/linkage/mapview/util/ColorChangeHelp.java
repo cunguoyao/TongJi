@@ -6,7 +6,9 @@ import android.util.Log;
 
 import com.linkage.mapview.bean.MyMap;
 import com.linkage.mapview.bean.Province;
+import com.linkage.tongji.bean.IndexReport;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -79,4 +81,24 @@ public static String province_datas[]={
             }
         }
     }
+
+
+    public static void setMapClors(MyMap mymap,ArrayList lists){
+        hashmap=new HashMap();
+        for (int i = 0; i < lists.size(); i++) {
+            IndexReport info = (IndexReport)lists.get(i);
+
+            hashmap.put(info.getProvinceName(),"#abc123");
+        }
+
+        for (Province p:mymap.getProvinceslist()){
+            if (hashmap.containsKey(p.getName())){
+                if (hashmap.get(p.getName())!=null){
+
+                    p.setColor(Color.parseColor(hashmap.get(p.getName())));
+                }
+            }
+        }
+    }
+
 }
