@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.linkage.lib.SwipeBackLayout;
 import com.linkage.mapview.adapter.provinceAdapter;
 import com.linkage.mapview.bean.MyMap;
 import com.linkage.mapview.bean.MycolorArea;
@@ -43,6 +44,7 @@ public class MapActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_map);
+        getSwipeBackLayout().setSwipeMode(SwipeBackLayout.FULL_SCREEN_LEFT);
         setSwipeBackEnable(true);
         setTitle("概况");
         Intent intent = getIntent();

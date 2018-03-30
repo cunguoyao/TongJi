@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.linkage.adapter.ProvinceDetailAdapter;
+import com.linkage.lib.SwipeBackLayout;
 import com.linkage.shapeloading.LoadingView;
 import com.linkage.tongji.app.Urls;
 import com.linkage.tongji.bean.MsgBean;
@@ -45,6 +46,7 @@ public class MsgCentreActivity extends BaseActivity implements SimpleListView.On
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_msg_centre);
+		getSwipeBackLayout().setSwipeMode(SwipeBackLayout.FULL_SCREEN_LEFT);
 		setSwipeBackEnable(true);
 		setTitle("消息中心");
 		Intent intent =getIntent();

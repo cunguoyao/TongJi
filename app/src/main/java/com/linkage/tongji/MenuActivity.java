@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.linkage.adapter.MenuAdapter;
+import com.linkage.lib.SwipeBackLayout;
 import com.linkage.shapeloading.LoadingView;
 import com.linkage.tongji.app.Urls;
 import com.linkage.tongji.bean.MenuBean;
@@ -44,6 +45,7 @@ public class MenuActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+        getSwipeBackLayout().setSwipeMode(SwipeBackLayout.FULL_SCREEN_LEFT);
         setSwipeBackEnable(true);
         loadingView = (LoadingView)findViewById(R.id.loadView);
         setTitle("菜单");

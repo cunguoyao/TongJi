@@ -3,14 +3,14 @@ package com.linkage.tongji;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.linkage.lib.SwipeBackLayout;
+import com.linkage.lib.app.SwipeBackActivity;
 import com.linkage.tongji.app.BaseApplication;
 import com.linkage.tongji.bean.User;
 import com.linkage.utils.SharedPreferencesUtils;
 import com.linkage.utils.StateBarTranslucentUtils;
 import com.linkage.widget.LoadingDialog;
 
-import me.imid.swipebacklayout.lib.SwipeBackLayout;
-import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 
 /**
  * Created by cunguoyao on 2018/3/27.

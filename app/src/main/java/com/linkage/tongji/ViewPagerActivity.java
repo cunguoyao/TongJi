@@ -29,7 +29,6 @@ import android.view.ViewGroup.LayoutParams;
 import com.linkage.photoView.PhotoView;
 import com.squareup.picasso.Picasso;
 
-import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 
 
 public class ViewPagerActivity extends BaseActivity {
@@ -40,6 +39,7 @@ public class ViewPagerActivity extends BaseActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_pager);
+
 		setSwipeBackEnable(false);
 		ViewPager viewPager = (ViewPager)findViewById(R.id.view_pager);
 

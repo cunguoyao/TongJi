@@ -37,13 +37,14 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.VideoView;
 
+import com.linkage.lib.SwipeBackLayout;
+import com.linkage.lib.app.SwipeBackActivity;
 import com.linkage.shapeloading.LoadingView;
 import com.linkage.tongji.LoginActivity;
 import com.linkage.tongji.MsgCentreActivity;
 import com.linkage.tongji.R;
 
-import me.imid.swipebacklayout.lib.SwipeBackLayout;
-import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
+
 
 /**
  * 

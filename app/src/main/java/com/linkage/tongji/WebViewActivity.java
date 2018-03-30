@@ -10,6 +10,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.linkage.lib.SwipeBackLayout;
+
 
 /**
  * Created by cunguoyao on 2018/3/29.
@@ -27,6 +29,7 @@ public class WebViewActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
+        getSwipeBackLayout().setSwipeMode(SwipeBackLayout.FULL_SCREEN_LEFT);
         setSwipeBackEnable(true);
         title = getIntent().getStringExtra("title");
         url = getIntent().getStringExtra("url");
