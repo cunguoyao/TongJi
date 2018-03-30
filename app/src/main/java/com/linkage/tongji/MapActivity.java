@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -42,7 +43,7 @@ public class MapActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_map);
-        setSwipeBackEnable(false);
+        setSwipeBackEnable(true);
         setTitle("概况");
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -92,6 +93,16 @@ public class MapActivity extends BaseActivity {
         }
         adapter = new provinceAdapter(this, indexReports);
         province_listview.setAdapter(adapter);
+        province_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                IndexReport item = adapter.getItem(i);
+                Intent intent = new Intent();
+                intent.setClass(MapActivity.this, MenuActivity.class);
+                intent.putExtra("provinceId", item.getProvinceId());
+                startActivity(intent);
+            }
+        });
     }
 
     private void initView() {

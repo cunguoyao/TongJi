@@ -1,7 +1,6 @@
 package com.linkage.mapview.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
-import com.linkage.tongji.MenuActivity;
 import com.linkage.tongji.R;
 import com.linkage.tongji.bean.IndexReport;
 
@@ -73,15 +71,6 @@ public class provinceAdapter extends BaseAdapter{
         }else{
             viewHolder.province_name.setTextColor(Color.BLACK);
         }
-        viewHolder.ll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent_sl = new Intent();
-                intent_sl.setClass(context, MenuActivity.class);
-                context.startActivity(intent_sl);
-
-            }
-        });
         return view;
     }
     private class ViewHolder {

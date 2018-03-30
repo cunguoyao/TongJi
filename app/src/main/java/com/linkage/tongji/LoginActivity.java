@@ -20,7 +20,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -38,7 +37,7 @@ import com.linkage.utils.C;
 import com.linkage.utils.LogUtils;
 import com.linkage.utils.NetRequest;
 import com.linkage.utils.SharedPreferencesUtils;
-import com.linkage.widget.AlertDialog;
+import com.linkage.widget.EditPwdDialog;
 import com.linkage.widget.JellyInterpolator;
 
 import org.json.JSONException;
@@ -47,8 +46,9 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import okhttp3.Request;
 
@@ -56,15 +56,14 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
 	private static final String TAG = LoginActivity.class.getName();
 
-	AnimatorSet set;
 	private TextView mBtnLogin;
 	private View progress;
 	private View mInputLayout;
-	private int mInputLayoutLeftMargin, mInputLayoutRightMargin;
 	private LinearLayout mName, mPsw;
 	private EditText tv_user,tv_pwd;
 	private User user;
 	private boolean autoLogin;
+	private EditPwdDialog editPwdDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -95,9 +94,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		mPsw = (LinearLayout) findViewById(R.id.input_layout_psw);
 		tv_user = (EditText) findViewById(R.id.tv_user);
 		tv_pwd= (EditText) findViewById(R.id.tv_pwd);
-		ViewGroup.MarginLayoutParams params = (MarginLayoutParams)mInputLayout.getLayoutParams();
-		mInputLayoutLeftMargin = params.leftMargin;
-		mInputLayoutRightMargin = params.rightMargin;
 		mBtnLogin.setOnClickListener(this);
 
 		tv_pwd.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -159,9 +155,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				view.setLayoutParams(params);
 			}
 		});
-		set = new AnimatorSet();
-		ObjectAnimator animator2 = ObjectAnimator.ofFloat(mInputLayout, "scaleX", 0.2f, 1f);
-		set.setDuration(300);
+		AnimatorSet set = new AnimatorSet();
+		ObjectAnimator animator2 = ObjectAnimator.ofFloat(mInputLayout, "scaleX", 1f, 0.2f);
+		set.setDuration(500);
 		set.setInterpolator(new AccelerateDecelerateInterpolator());
 		set.playTogether(animator, animator2);
 		set.start();
@@ -213,29 +209,13 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	 * 登录成功后跳转页面
 	 */
 	private void startIndexReportPage(ArrayList<IndexReport> list) {
-		progress.setVisibility(View.GONE);
-//		mInputLayout.setVisibility(View.VISIBLE);
-//		mName.setVisibility(View.VISIBLE);
-//		mPsw.setVisibility(View.VISIBLE);
-//		mBtnLogin.setVisibility(View.VISIBLE);
-
-		ViewGroup.MarginLayoutParams params = (MarginLayoutParams) mInputLayout.getLayoutParams();
-		params.leftMargin = 0;
-		params.rightMargin = 0;
-		mInputLayout.setLayoutParams(params);
-		
-		ObjectAnimator animator2 = ObjectAnimator.ofFloat(mInputLayout, "scaleX", 1f,0.2f );
-		animator2.setDuration(500);
-		animator2.setInterpolator(new AccelerateDecelerateInterpolator());
-		animator2.start();
-
+		reDisplayForm();
 		Intent intent_sl = new Intent();
 		intent_sl.setClass(LoginActivity.this, MapActivity.class);
 		Bundle b = new Bundle();
 		b.putSerializable("IndexReportList", list);
 		intent_sl.putExtras(b);
 		startActivity(intent_sl);
-		finish();
 	}
 
 	//login @params:password is after md5
@@ -253,43 +233,62 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			@Override
 			public void requestFailure(Request request, IOException e) {
 				LogUtils.d("--NetRequest--fail--");
-				reDisplayFormWhenFailed();
+				reDisplayForm();
 				Toast.makeText(LoginActivity.this, "请求失败", Toast.LENGTH_SHORT).show();
 			}
 		});
     }
 
-    private void reDisplayFormWhenFailed() {
-		progress.setVisibility(View.INVISIBLE);
+    private void reDisplayForm() {
+		progress.setVisibility(View.GONE);
 		mInputLayout.setVisibility(View.VISIBLE);
 		mBtnLogin.setVisibility(View.VISIBLE);
+
 		ViewGroup.MarginLayoutParams params = (MarginLayoutParams) mInputLayout.getLayoutParams();
-		params.leftMargin = mInputLayoutLeftMargin;
-		params.rightMargin = mInputLayoutRightMargin;
+		params.leftMargin = 0;
+		params.rightMargin = 0;
 		mInputLayout.setLayoutParams(params);
+
+		ObjectAnimator animator2 = ObjectAnimator.ofFloat(mInputLayout, "scaleX", 0.2f, 1f );
+		animator2.setDuration(500);
+		animator2.setInterpolator(new AccelerateDecelerateInterpolator());
+		animator2.start();
 	}
 
     //首次登录修改密码
-	private void modify(String password) {
+	private void modify(String token, final String password) {
+		showLoading();
 		Map<String, String> params = new HashMap<>();
-		params.put("pwd", C.md5(password));
-		NetRequest.postFormRequest(Urls.login, params, TAG, new NetRequest.DataCallBack() {
+		params.put("token", token);
+		params.put("newPwd", C.md5(password));
+		NetRequest.postFormRequest(Urls.resetPass, params, TAG, new NetRequest.DataCallBack() {
 			@Override
 			public void requestSuccess(String result) throws Exception {
+				dismissLoading();
+				editPwdDialog.dismiss();
 				LogUtils.d("--NetRequest--success--" + result);
 				JSONObject jsonObject = new JSONObject(result);
 				int ret = jsonObject.optInt("ret", -1);
-				if(ret == 1) {
-					popModifyPwdDialog();
+				if(ret == 0) {
+					User user = getAccount();
+					user.setLoginPass(C.md5(password));
+					SharedPreferencesUtils.getInstance(LoginActivity.this, "report-client").setObject("assemble_", user);
+					String token = jsonObject.optJSONObject("data").optString("token");
+					fetchIndexReport(token);
 				}else {
-
+					String msg = jsonObject.optString("msg");
+					if(TextUtils.isEmpty(msg)) {
+						msg = "服务器返回失败";
+					}
+					Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_SHORT).show();
 				}
 			}
 
 			@Override
 			public void requestFailure(Request request, IOException e) {
+				dismissLoading();
 				LogUtils.d("--NetRequest--fail--");
-				popModifyPwdDialog();
+				Toast.makeText(LoginActivity.this, "修改失败", Toast.LENGTH_SHORT).show();
 			}
 		});
 	}
@@ -333,15 +332,17 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			if (ret == 0) {
 				User user = new Gson().fromJson(jsonObject.optString("data"), User.class);
 				if(user != null) {
-//					if(user.getPass_flag() == 0) {//首次登录，未修改密码
-//						popModifyPwdDialog();
-//					}else {
+					if(user.getPassFlag() == 0) {//首次登录，未修改密码
+						String token = jsonObject.optJSONObject("data").optString("token");
+						popModifyPwdDialog(token);
+					}else {
 						SharedPreferencesUtils.getInstance(LoginActivity.this, "report-client").setObject("assemble_", user);
 						String token = jsonObject.optJSONObject("data").optString("token");
 						fetchIndexReport(token);
-//					}
+					}
 				}
 			} else {
+				reDisplayForm();
 				String msg = jsonObject.optString("msg");
 				if(TextUtils.isEmpty(msg)) {
 					msg = "服务器返回失败";
@@ -368,15 +369,36 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
     };
 
-	private void popModifyPwdDialog() {
-		AlertDialog loginDialog = new AlertDialog(this);
-		loginDialog.builder().setTitle("提示").setMsg("系统检测到您是第一次登录，需要修改密码才能使用")
-				.setPositiveButton("确认", new View.OnClickListener() {
+	private void popModifyPwdDialog(final String token) {
+		editPwdDialog = new EditPwdDialog(this);
+		editPwdDialog.builder().setTitle("提示").setMsg("系统检测到您是第一次登录，需要修改密码才能使用").setCancelable(false)
+				.setPositiveButton("确认", new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-
+						String input1 = editPwdDialog.getEditText1().getText().toString();
+						String input2 = editPwdDialog.getEditText2().getText().toString();
+						if(TextUtils.isEmpty(input1)) {
+							Toast.makeText(LoginActivity.this, "请输入新密码", Toast.LENGTH_SHORT).show();
+							return;
+						}
+						if(input1.length() > 10) {
+							Toast.makeText(LoginActivity.this, "新密码长度过长", Toast.LENGTH_SHORT).show();
+							return;
+						}
+						if(!input1.equals(input2)) {
+							Toast.makeText(LoginActivity.this, "两次密码输入不一致", Toast.LENGTH_SHORT).show();
+							return;
+						}
+						modify(token, input1);
 					}
-				}).show();
+		}).show();
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				editPwdDialog.showKeyboard();
+			}
+		}, 200);
 	}
 
 	@Override

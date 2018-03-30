@@ -32,7 +32,10 @@
                 android:background="#00000000"
                 android:hint="账号/用户名/邮箱"
                 android:padding="5dip"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:lines="1"
+                android:inputType="text|number"
+                android:imeOptions="actionNext"/>
         </LinearLayout>
 
         <View

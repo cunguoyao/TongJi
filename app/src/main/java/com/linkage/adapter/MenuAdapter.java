@@ -62,15 +62,8 @@ public class MenuAdapter extends BaseAdapter {
         }else {
             holder = (MenuHolder) convertView.getTag();
         }
-        holder.textView.setText(item.getIconMsg());
-        Picasso.with(context).load(item.getIconUrl()).placeholder(R.drawable.empty_photo).error(R.drawable.empty_photo).into(holder.imageView);
-        holder.imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, WebViewActivity.class);
-                context.startActivity(intent);
-            }
-        });
+        holder.textView.setText(item.getTitle());
+        Picasso.with(context).load(item.getPicUrl()).placeholder(R.drawable.empty_photo).error(R.drawable.empty_photo).into(holder.imageView);
         return convertView;
     }
 

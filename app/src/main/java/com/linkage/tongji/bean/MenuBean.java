@@ -14,30 +14,11 @@ import java.util.List;
 public class MenuBean implements Serializable {
 
     private int id;
-    private int type;
-    private String iconUrl;
-    private String iconMsg;
-
-    public static MenuBean parseFromJson(JSONObject jsonObj) {
-        MenuBean menu = new MenuBean();
-        menu.setId(jsonObj.optInt("id"));
-        menu.setIconMsg(jsonObj.optString("iconMsg"));
-        menu.setIconUrl(jsonObj.optString("iconUrl"));
-        menu.setType(jsonObj.optInt("type"));
-        return menu;
-    }
-
-    public static List<MenuBean> parseFromJson(JSONArray jsonArray) {
-        List<MenuBean> menus = new ArrayList<>();
-        if (jsonArray != null && jsonArray.length() > 0) {
-            for (int i = 0; i < jsonArray.length(); i++) {
-                MenuBean talk = parseFromJson(jsonArray.optJSONObject(i));
-                if (talk != null)
-                    menus.add(talk);
-            }
-        }
-        return menus;
-    }
+    private String picUrl;
+    private String title;
+    private int category;
+    private int displayType;// 1横向显示
+    private String skipUrl;
 
     public int getId() {
         return id;
@@ -47,27 +28,43 @@ public class MenuBean implements Serializable {
         this.id = id;
     }
 
-    public int getType() {
-        return type;
+    public String getPicUrl() {
+        return picUrl;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setPicUrl(String picUrl) {
+        this.picUrl = picUrl;
     }
 
-    public String getIconUrl() {
-        return iconUrl;
+    public String getTitle() {
+        return title;
     }
 
-    public void setIconUrl(String iconUrl) {
-        this.iconUrl = iconUrl;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getIconMsg() {
-        return iconMsg;
+    public int getCategory() {
+        return category;
     }
 
-    public void setIconMsg(String iconMsg) {
-        this.iconMsg = iconMsg;
+    public void setCategory(int category) {
+        this.category = category;
+    }
+
+    public int getDisplayType() {
+        return displayType;
+    }
+
+    public void setDisplayType(int displayType) {
+        this.displayType = displayType;
+    }
+
+    public String getSkipUrl() {
+        return skipUrl;
+    }
+
+    public void setSkipUrl(String skipUrl) {
+        this.skipUrl = skipUrl;
     }
 }

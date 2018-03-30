@@ -1,5 +1,6 @@
 package com.linkage.tongji;
 
+import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -18,14 +19,23 @@ public class WebViewActivity extends BaseActivity {
 
     private ProgressBar bar;
     private WebView mWebView;
+    private String title;
     private String url;
+    private int displayType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
         setSwipeBackEnable(true);
-        url = "http://221.130.6.210:9822/static/bar-negative.html?provinceId=881&token=2e503bd3-f511-4007-a01c-a397749d35bd&key=buMSl1ktYnt6a9ikMImfjV0aX6qNE";
+        title = getIntent().getStringExtra("title");
+        url = getIntent().getStringExtra("url");
+        displayType = getIntent().getIntExtra("displayType", 0);
+        if(displayType == 1) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);//横屏
+        }else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//竖屏
+        }
         bar = (ProgressBar) findViewById(R.id.myProgressBar);
         mWebView = (WebView)findViewById(R.id.webView);
         WebSettings webSettings = mWebView.getSettings();
@@ -35,6 +45,11 @@ public class WebViewActivity extends BaseActivity {
         webSettings.setSavePassword(false);
         webSettings.setUseWideViewPort(true);
         webSettings.setLoadWithOverviewMode(true);
+        //支持屏幕缩放
+        webSettings.setSupportZoom(true);
+        webSettings.setBuiltInZoomControls(true);
+        //不显示webview缩放按钮
+        webSettings.setDisplayZoomControls(false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             mWebView.removeJavascriptInterface("searchBoxJavaBridge_");
             mWebView.removeJavascriptInterface("accessibility");
@@ -55,6 +70,7 @@ public class WebViewActivity extends BaseActivity {
                 super.onProgressChanged(view, newProgress);
             }
         });
+        setTitle(title);
         mWebView.loadUrl(url);
     }
 }

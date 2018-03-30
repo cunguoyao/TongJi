@@ -1,16 +1,30 @@
 package com.linkage.tongji;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.AdapterView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.linkage.adapter.MenuAdapter;
 import com.linkage.shapeloading.LoadingView;
+import com.linkage.tongji.app.Urls;
 import com.linkage.tongji.bean.MenuBean;
+import com.linkage.utils.LogUtils;
+import com.linkage.utils.NetRequest;
 import com.linkage.widget.MyGridView;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import okhttp3.Request;
 
 /**
  * Created by cunguoyao on 2018/3/27.
@@ -18,10 +32,13 @@ import java.util.List;
 
 public class MenuActivity extends BaseActivity {
 
+    private static final String TAG = MenuActivity.class.getName();
+
     private LoadingView loadingView;
     private MyGridView gridView;
     private MenuAdapter menuAdapter;
     private List<MenuBean> menuList;
+    private int provinceId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,51 +48,57 @@ public class MenuActivity extends BaseActivity {
         loadingView = (LoadingView)findViewById(R.id.loadView);
         setTitle("菜单");
         gridView = (MyGridView)findViewById(R.id.gridView);
+        provinceId = getIntent().getIntExtra("provinceId", 0);
+        menuList = new ArrayList<>();
+        menuAdapter = new MenuAdapter(this, menuList);
+        gridView.setAdapter(menuAdapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                MenuBean item = menuAdapter.getItem(i);
+                if(item.getCategory() == 6) {
+                    Intent intent = new Intent(MenuActivity.this, MsgCentreActivity.class);
+                    startActivity(intent);
+                }else {
+                    Intent intent = new Intent(MenuActivity.this, WebViewActivity.class);
+                    String url = item.getSkipUrl() + "?category=" + item.getCategory() + "&token=" + getAccount().getToken()
+                            + "&key=buMSl1ktYnt6a9ikMImfjV0aX6qNE" + "&provinceId=" + provinceId;
+                    intent.putExtra("title", item.getTitle());
+                    intent.putExtra("url", url);
+                    intent.putExtra("displayType", item.getDisplayType());
+                    startActivity(intent);
+                }
+            }
+        });
         fetchMenuData();
     }
 
     private void fetchMenuData() {
-        menuList = new ArrayList<>();
-        menuAdapter = new MenuAdapter(this, menuList);
-        gridView.setAdapter(menuAdapter);
         loadingView.setVisibility(View.VISIBLE);
-        new Handler().postDelayed(new Runnable() {
+        Map<String, String> params = new HashMap<>();
+        params.put("token", getAccount().getToken());
+        params.put("provinceId", provinceId+"");
+        NetRequest.postFormRequest(Urls.menuList, params, TAG, new NetRequest.DataCallBack() {
             @Override
-            public void run() {
-                loadingView.setVisibility(View.GONE);
-                menuList.clear();
-                MenuBean menuBean1 = new MenuBean();
-                menuBean1.setId(1);
-                menuBean1.setType(1);
-                menuBean1.setIconUrl("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1522209295917&di=9ebffb22e74323df1d98ac26424cd372&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimgad%2Fpic%2Fitem%2F4afbfbedab64034fbd1ed115a5c379310b551dd5.jpg");
-                menuBean1.setIconMsg("地市用户概况");
-                MenuBean menuBean2 = new MenuBean();
-                menuBean2.setId(2);
-                menuBean2.setType(1);
-                menuBean2.setIconUrl("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1522209295917&di=9ebffb22e74323df1d98ac26424cd372&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimgad%2Fpic%2Fitem%2F4afbfbedab64034fbd1ed115a5c379310b551dd5.jpg");
-                menuBean2.setIconMsg("cp业务发展概况");
-                MenuBean menuBean3 = new MenuBean();
-                menuBean3.setId(3);
-                menuBean3.setType(1);
-                menuBean3.setIconUrl("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1522209295917&di=9ebffb22e74323df1d98ac26424cd372&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimgad%2Fpic%2Fitem%2F4afbfbedab64034fbd1ed115a5c379310b551dd5.jpg");
-                menuBean3.setIconMsg("代理商用户概况");
-                MenuBean menuBean4 = new MenuBean();
-                menuBean4.setId(4);
-                menuBean4.setType(1);
-                menuBean4.setIconUrl("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1522209295917&di=9ebffb22e74323df1d98ac26424cd372&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimgad%2Fpic%2Fitem%2F4afbfbedab64034fbd1ed115a5c379310b551dd5.jpg");
-                menuBean4.setIconMsg("app健康度");
-                MenuBean menuBean5 = new MenuBean();
-                menuBean5.setId(5);
-                menuBean5.setType(1);
-                menuBean5.setIconUrl("https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1522209295917&di=9ebffb22e74323df1d98ac26424cd372&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimgad%2Fpic%2Fitem%2F4afbfbedab64034fbd1ed115a5c379310b551dd5.jpg");
-                menuBean5.setIconMsg("详细统计报表");
-                menuList.add(menuBean1);
-                menuList.add(menuBean2);
-                menuList.add(menuBean3);
-                menuList.add(menuBean4);
-                menuList.add(menuBean5);
-                menuAdapter.notifyDataSetChanged();
+            public void requestSuccess(String result) throws Exception {
+                loadingView.setVisibility(View.INVISIBLE);
+                LogUtils.d("--NetRequest--success--" + result);
+                JSONObject jsonObject = new JSONObject(result);
+                int ret = jsonObject.optInt("ret", -1);
+                if(ret == 0) {
+                    List<MenuBean> temp = new Gson().fromJson(jsonObject.optString("data"), new TypeToken<ArrayList<MenuBean>>() {}.getType());
+                    menuList.clear();
+                    if(temp != null) {
+                        menuList.addAll(temp);
+                    }
+                    menuAdapter.notifyDataSetChanged();
+                }
             }
-        }, 2000);
+            @Override
+            public void requestFailure(Request request, IOException e) {
+                loadingView.setVisibility(View.INVISIBLE);
+                LogUtils.d("--NetRequest--fail--");
+            }
+        });
     }
 }

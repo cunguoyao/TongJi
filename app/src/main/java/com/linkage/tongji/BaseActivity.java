@@ -7,6 +7,7 @@ import com.linkage.tongji.app.BaseApplication;
 import com.linkage.tongji.bean.User;
 import com.linkage.utils.SharedPreferencesUtils;
 import com.linkage.utils.StateBarTranslucentUtils;
+import com.linkage.widget.LoadingDialog;
 
 import me.imid.swipebacklayout.lib.SwipeBackLayout;
 import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
@@ -18,6 +19,7 @@ import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
 public class BaseActivity extends SwipeBackActivity {
 
     private SwipeBackLayout mSwipeBackLayout;
+    private LoadingDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,5 +52,19 @@ public class BaseActivity extends SwipeBackActivity {
     public void setTitle(String title) {
         TextView titleText = (TextView) findViewById(R.id.title);
         titleText.setText(title);
+    }
+
+    public void showLoading() {
+        if(loadingDialog != null && loadingDialog.isShowing())return;
+        loadingDialog = new LoadingDialog(this);
+        loadingDialog.setCancelable(false);
+        loadingDialog.show();
+    }
+
+    public void dismissLoading() {
+        if(loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
+            loadingDialog = null;
+        }
     }
 }
