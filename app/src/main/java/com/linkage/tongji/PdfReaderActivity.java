@@ -16,6 +16,7 @@ public class PdfReaderActivity extends BaseActivity {
 
     private PDFView pdfView;
     private String pdfPath;
+    private String title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +26,7 @@ public class PdfReaderActivity extends BaseActivity {
         setSwipeBackEnable(true);
         pdfView = (PDFView) findViewById(R.id.pdfview);
         pdfPath = getIntent().getStringExtra("pdf_path");
+        title = getIntent().getStringExtra("title");
         if(TextUtils.isEmpty(pdfPath)){
             finish();
             return;
@@ -38,7 +40,7 @@ public class PdfReaderActivity extends BaseActivity {
               /*.pages(0, 1,2, 3, 4, 5)*/
                     .defaultPage(1)
                     .showMinimap(false)
-                    .enableSwipe(true)
+                    .enableSwipe(true).swipeVertical(true)
              /* .onDraw(onDraw)
                 .onLoad(onLoadCompleteListener)
                 .onPageChange(onPageChangeListener)*/
@@ -46,5 +48,6 @@ public class PdfReaderActivity extends BaseActivity {
         }else {
             finish();
         }
+        setTitle(title);
     }
 }

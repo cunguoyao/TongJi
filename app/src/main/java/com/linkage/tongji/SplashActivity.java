@@ -86,6 +86,7 @@ public class SplashActivity extends BaseActivity {
                         int pathVersion = version.getPatch();
                         if(pathVersion > Integer.valueOf(BuildInfo.TINKER_ID)) {
                             //TODO download and load patch
+                            goToLogin();//这个写好要删
                         }else {
                             goToLogin();
                         }

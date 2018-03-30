@@ -1,6 +1,7 @@
 package com.linkage.tongji;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.TextView;
 
 import com.linkage.lib.SwipeBackLayout;
@@ -51,7 +52,9 @@ public class BaseActivity extends SwipeBackActivity {
 
     public void setTitle(String title) {
         TextView titleText = (TextView) findViewById(R.id.title);
-        titleText.setText(title);
+        if(!TextUtils.isEmpty(title)) {
+            titleText.setText(title);
+        }
     }
 
     public void showLoading() {

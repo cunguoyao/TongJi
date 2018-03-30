@@ -47,8 +47,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import okhttp3.Request;
 
@@ -84,6 +82,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		mName.setVisibility(View.VISIBLE);
 		mPsw.setVisibility(View.VISIBLE);
 		mBtnLogin.setVisibility(View.VISIBLE);
+		tv_pwd.setText("");
 	}
 
 	private void initView() {
@@ -342,13 +341,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			if (ret == 0) {
 				User user = new Gson().fromJson(jsonObject.optString("data"), User.class);
 				if(user != null) {
+					SharedPreferencesUtils.getInstance(LoginActivity.this, "report-client").setObject("assemble_", user);
 					if(user.getPassFlag() == 0) {//首次登录，未修改密码
-						String token = jsonObject.optJSONObject("data").optString("token");
-						popModifyPwdDialog(token);
+						popModifyPwdDialog(user.getToken());
 					}else {
-						SharedPreferencesUtils.getInstance(LoginActivity.this, "report-client").setObject("assemble_", user);
-						String token = jsonObject.optJSONObject("data").optString("token");
-						fetchIndexReport(token);
+						fetchIndexReport(user.getToken());
 					}
 				}
 			} else {

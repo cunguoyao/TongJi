@@ -22,6 +22,7 @@ import com.linkage.tongji.bean.MsgBean;
 import com.linkage.utils.FileHelper;
 import com.linkage.utils.LogUtils;
 import com.linkage.utils.NetRequest;
+import com.linkage.utils.SharedPreferencesUtils;
 import com.linkage.widget.SimpleListView;
 import com.tencent.tinker.lib.tinker.TinkerInstaller;
 
@@ -48,7 +49,7 @@ public class MsgCentreActivity extends BaseActivity implements SimpleListView.On
 	private int page = 1;
 
 	private FileHelper fileHelper;
-	private String downloadFilePath;
+	private String downloadFilePath, title;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +118,7 @@ public class MsgCentreActivity extends BaseActivity implements SimpleListView.On
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		loadingView.setVisibility(View.VISIBLE);
 		MsgBean item = mData.get(position);
+
 		download(item);
 	}
 
@@ -131,6 +133,7 @@ public class MsgCentreActivity extends BaseActivity implements SimpleListView.On
 		item.setUrl("http://221.130.6.210:9822/report-files/testpdf/test.pdf");
 		final String fileName = item.getUrl().substring(item.getUrl().lastIndexOf("/") + 1);
 		downloadFilePath = BaseApplication.getInstance().getDirs().getPath() + "/" + fileName;
+		title = item.getTitle();
 		LogUtils.e("--downloadFilePath--", downloadFilePath);
 		new Thread(new Runnable() {
 			@Override
@@ -154,6 +157,7 @@ public class MsgCentreActivity extends BaseActivity implements SimpleListView.On
 					loadingView.setVisibility(View.INVISIBLE);
 					Intent intent = new Intent(MsgCentreActivity.this, PdfReaderActivity.class);
 					intent.putExtra("pdf_path", downloadFilePath);
+					intent.putExtra("title", title);
 					startActivity(intent);
 					break;
 				case FileHelper.MESSAGE_ERROR:
