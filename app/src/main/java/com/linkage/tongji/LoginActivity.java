@@ -330,6 +330,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			@Override
 			public void requestFailure(Request request, IOException e) {
 				LogUtils.d("--NetRequest--fail--");
+				reDisplayForm();
+				Toast.makeText(LoginActivity.this, "首页数据获取失败", Toast.LENGTH_SHORT).show();
 			}
 		});
 	}

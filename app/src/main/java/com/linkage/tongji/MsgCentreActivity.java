@@ -101,8 +101,9 @@ public class MsgCentreActivity extends BaseActivity implements SimpleListView.On
 				int ret = jsonObject.optInt("ret", -1);
 				if(ret == 0) {
 					List<MsgBean> temp = new Gson().fromJson(jsonObject.optString("data"), new TypeToken<ArrayList<MsgBean>>() {}.getType());
+					if(temp == null)temp = new ArrayList<>();
 					mAdapter.setData(temp, page == 1 ? true : false);
-					listView.finishLoad(page == 5 ? true : false); //最多加载五页数据
+					listView.finishLoad(Urls.pageSize > temp.size() ? true : false); //最多加载
 					mData.addAll(temp);
 				}
 			}

@@ -25,6 +25,7 @@
         <ImageView
             android:layout_width="55dip"
             android:layout_height="55dip"
+            android:visibility="invisible"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/project_detail_cir" />
 
