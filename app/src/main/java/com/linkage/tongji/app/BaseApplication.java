@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.support.multidex.MultiDex;
 
+import com.linkage.utils.LogUtils;
 import com.linkage.utils.tinker.TinkerManager;
 import com.tencent.tinker.anno.DefaultLifeCycle;
 import com.tencent.tinker.loader.app.DefaultApplicationLike;

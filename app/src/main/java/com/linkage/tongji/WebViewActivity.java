@@ -17,7 +17,7 @@ import com.linkage.lib.SwipeBackLayout;
  * Created by cunguoyao on 2018/3/29.
  */
 
-public class WebViewActivity extends BaseActivity {
+public class WebViewActivity extends BaseActivity implements View.OnClickListener {
 
     private ProgressBar bar;
     private WebView mWebView;
@@ -39,6 +39,8 @@ public class WebViewActivity extends BaseActivity {
         }else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//竖屏
         }
+        (findViewById(R.id.title_back)).setVisibility(View.VISIBLE);
+        (findViewById(R.id.title_back)).setOnClickListener(this);
         bar = (ProgressBar) findViewById(R.id.myProgressBar);
         mWebView = (WebView)findViewById(R.id.webView);
         WebSettings webSettings = mWebView.getSettings();
@@ -75,5 +77,14 @@ public class WebViewActivity extends BaseActivity {
         });
         setTitle(title);
         mWebView.loadUrl(url);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.title_back:
+                finish();
+                break;
+        }
     }
 }

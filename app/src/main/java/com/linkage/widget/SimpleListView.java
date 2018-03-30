@@ -175,12 +175,12 @@ public class SimpleListView extends SimpleSwipeRefreshLayout {
             mLoadMoreView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mLoadMoreStatus == LoadMoreStatus.CLICK_TO_LOAD && !isRefreshing()) {
+                    /*if (mLoadMoreStatus == LoadMoreStatus.CLICK_TO_LOAD && !isRefreshing()) {
                         setLoadMoreStatus(LoadMoreStatus.LOADING);
                         if (mLoadMoreStatus != null) {
                             mOnLoadListener.onLoad(false);
                         }
-                    }
+                    }*/
                 }
             });
             mLoadMoreView.setLayoutParams(new AbsListView.LayoutParams(LayoutParams.MATCH_PARENT, getResources().getDimensionPixelOffset(R.dimen.dp_10) * 4));
@@ -207,7 +207,8 @@ public class SimpleListView extends SimpleSwipeRefreshLayout {
             } else if (mLoadMoreStatus == LoadMoreStatus.LOADING) {
                 mLoadMoreView.setText("正在加载...");
             } else {
-                mLoadMoreView.setText("点击加载更多");
+                //mLoadMoreView.setText("点击加载更多");
+                mLoadMoreView.setVisibility(View.INVISIBLE);
             }
         }
     }

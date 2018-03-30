@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.linkage.lib.SwipeBackLayout;
 import com.linkage.mapview.adapter.provinceAdapter;
@@ -20,15 +21,17 @@ import com.linkage.tongji.bean.IndexReport;
 import com.linkage.tongji.bean.User;
 import com.linkage.utils.LogUtils;
 import com.linkage.utils.NetRequest;
+import com.linkage.utils.SharedPreferencesUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MapActivity extends BaseActivity {
+public class MapActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String TAG = MapActivity.class.getName();
 
+    private TextView leftBtn;
     private MyMapView mapview;
     private provinceAdapter adapter;
     private MyMap myMap;
@@ -45,8 +48,8 @@ public class MapActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_map);
 //        getSwipeBackLayout().setSwipeMode(SwipeBackLayout.FULL_SCREEN_LEFT);
-        setSwipeBackEnable(true);
-        setTitle("概况");
+        setSwipeBackEnable(false);
+        setTitle("统计");
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         indexReports = (ArrayList<IndexReport>)bundle.getSerializable("IndexReportList");
@@ -103,18 +106,24 @@ public class MapActivity extends BaseActivity {
                 Intent intent = new Intent();
                 intent.setClass(MapActivity.this, MenuActivity.class);
                 intent.putExtra("provinceId", item.getProvinceId());
+                intent.putExtra("provinceName", item.getProvinceName());
                 startActivity(intent);
             }
         });
     }
 
     private void initView() {
+        leftBtn = (TextView) findViewById(R.id.title_back);
         province_listview = (ListView) findViewById(R.id.province_listview);
         mapview = (MyMapView) findViewById(R.id.view);
         colorView = (ColorView) findViewById(R.id.colorView);
         changeType = (Button) findViewById(R.id.changeType);
         //changeType.setVisibility(View.GONE);
         changeType.setText(ColorChangeHelp.nameStrings[0]);
+        leftBtn.setText("注销");
+        leftBtn.setVisibility(View.VISIBLE);
+        leftBtn.setCompoundDrawables(null, null, null, null);
+        leftBtn.setOnClickListener(this);
     }
     /**
      * 设置颜色渐变条
@@ -149,6 +158,19 @@ public class MapActivity extends BaseActivity {
     private void fetchUser() {
         User user = getAccount();
         LogUtils.d("---user=" + user.getUserName());
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.title_back:
+                SharedPreferencesUtils.getInstance(this, "report-client").setObject("assemble_", "");
+                Intent intent = new Intent(this, LoginActivity.class);
+                intent.putExtra("logout", 1);
+                startActivity(intent);
+                finish();
+                break;
+        }
     }
 
     @Override

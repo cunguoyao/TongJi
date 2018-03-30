@@ -4,11 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -24,10 +23,10 @@ import com.linkage.utils.LogUtils;
 import com.linkage.utils.NetRequest;
 import com.linkage.utils.SharedPreferencesUtils;
 import com.linkage.widget.SimpleListView;
-import com.tencent.tinker.lib.tinker.TinkerInstaller;
 
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,7 +48,6 @@ public class MsgCentreActivity extends BaseActivity implements SimpleListView.On
 	private int page = 1;
 
 	private FileHelper fileHelper;
-	private String downloadFilePath, title;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +55,10 @@ public class MsgCentreActivity extends BaseActivity implements SimpleListView.On
 		setContentView(R.layout.activity_msg_centre);
 		getSwipeBackLayout().setSwipeMode(SwipeBackLayout.FULL_SCREEN_LEFT);
 		setSwipeBackEnable(true);
-		setTitle("消息中心");
 		Intent intent =getIntent();
+		String title = getIntent().getStringExtra("title");
+		(findViewById(R.id.title_back)).setVisibility(View.VISIBLE);
+		(findViewById(R.id.title_back)).setOnClickListener(this);
 		provinceId =intent.getIntExtra("provinceId", 0);
 		loadingView = (LoadingView)findViewById(R.id.loadView);
 		mEmptyView = findViewById(R.id.empty_rl);
@@ -69,7 +69,7 @@ public class MsgCentreActivity extends BaseActivity implements SimpleListView.On
 		listView.setAdapter(mAdapter);
 		listView.setOnLoadListener(this);
 		listView.setOnItemClickListener(this);
-		fileHelper = new FileHelper(fileDownloadHandler);
+		setTitle(title);
 		fetchData();
 	}
 
@@ -116,25 +116,43 @@ public class MsgCentreActivity extends BaseActivity implements SimpleListView.On
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		loadingView.setVisibility(View.VISIBLE);
 		MsgBean item = mData.get(position);
-
-		download(item);
+		if(TextUtils.isEmpty(item.getUrl())) {
+			Toast.makeText(this, "地址为空", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		String pdfPath = SharedPreferencesUtils.getInstance(MsgCentreActivity.this, "pdf_").getObject(item.getUrl(), String.class);
+		if(TextUtils.isEmpty(pdfPath)) {
+			LogUtils.i("-----pdfPath=null, download");
+			download(item);
+		}else {
+			File file = new File(pdfPath);
+			if(file != null && file.exists()) {
+				LogUtils.i("-----file=exists, go pdf");
+				Intent intent = new Intent(MsgCentreActivity.this, PdfReaderActivity.class);
+				intent.putExtra("pdf_path", pdfPath);
+				intent.putExtra("title", item.getTitle());
+				startActivity(intent);
+			}else {
+				download(item);
+			}
+		}
 	}
 
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-
+			case R.id.title_back:
+				finish();
+				break;
 		}
 	}
 
 	private void download(final MsgBean item) {
-		item.setUrl("http://221.130.6.210:9822/report-files/testpdf/test.pdf");
 		final String fileName = item.getUrl().substring(item.getUrl().lastIndexOf("/") + 1);
-		downloadFilePath = BaseApplication.getInstance().getDirs().getPath() + "/" + fileName;
-		title = item.getTitle();
-		LogUtils.e("--downloadFilePath--", downloadFilePath);
+		String downloadFilePath = BaseApplication.getInstance().getDirs().getPath() + "/" + fileName;
+		FileHandler fileDownloadHandler = new FileHandler(item, downloadFilePath);
+		fileHelper = new FileHelper(fileDownloadHandler);
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -143,11 +161,21 @@ public class MsgCentreActivity extends BaseActivity implements SimpleListView.On
 		}).start();
 	}
 
-	private Handler fileDownloadHandler = new Handler() {
+	class FileHandler extends Handler {
+
+		private MsgBean item;
+		private String downloadFilePath;
+
+		public FileHandler(MsgBean item, String downloadFilePath) {
+			this.item = item;
+			this.downloadFilePath = downloadFilePath;
+		}
+
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 				case FileHelper.MESSAGE_OPEN_DIALOG:// 开始启动Dialog  101
+					loadingView.setVisibility(View.VISIBLE);
 					break;
 				case FileHelper.MESSAGE_START:// 开始下载
 					break;
@@ -155,9 +183,10 @@ public class MsgCentreActivity extends BaseActivity implements SimpleListView.On
 					break;
 				case FileHelper.MESSAGE_STOP:// 下载结束
 					loadingView.setVisibility(View.INVISIBLE);
+					SharedPreferencesUtils.getInstance(MsgCentreActivity.this, "pdf_").setObject(item.getUrl(), downloadFilePath);
 					Intent intent = new Intent(MsgCentreActivity.this, PdfReaderActivity.class);
 					intent.putExtra("pdf_path", downloadFilePath);
-					intent.putExtra("title", title);
+					intent.putExtra("title", item.getTitle());
 					startActivity(intent);
 					break;
 				case FileHelper.MESSAGE_ERROR:
@@ -166,7 +195,8 @@ public class MsgCentreActivity extends BaseActivity implements SimpleListView.On
 			}
 			super.handleMessage(msg);
 		}
-	};
+	}
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();

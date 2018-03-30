@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -31,7 +32,7 @@ import okhttp3.Request;
  * Created by cunguoyao on 2018/3/27.
  */
 
-public class MenuActivity extends BaseActivity {
+public class MenuActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String TAG = MenuActivity.class.getName();
 
@@ -39,6 +40,7 @@ public class MenuActivity extends BaseActivity {
     private MyGridView gridView;
     private MenuAdapter menuAdapter;
     private List<MenuBean> menuList;
+    private String provinceName;
     private int provinceId;
 
     @Override
@@ -47,9 +49,11 @@ public class MenuActivity extends BaseActivity {
         setContentView(R.layout.activity_menu);
         getSwipeBackLayout().setSwipeMode(SwipeBackLayout.FULL_SCREEN_LEFT);
         setSwipeBackEnable(true);
+        (findViewById(R.id.title_back)).setVisibility(View.VISIBLE);
+        (findViewById(R.id.title_back)).setOnClickListener(this);
         loadingView = (LoadingView)findViewById(R.id.loadView);
-        setTitle("菜单");
         gridView = (MyGridView)findViewById(R.id.gridView);
+        provinceName = getIntent().getStringExtra("provinceName");
         provinceId = getIntent().getIntExtra("provinceId", 0);
         menuList = new ArrayList<>();
         menuAdapter = new MenuAdapter(this, menuList);
@@ -61,6 +65,7 @@ public class MenuActivity extends BaseActivity {
                 if(item.getCategory() == 6) {
                     Intent intent = new Intent(MenuActivity.this, MsgCentreActivity.class);
                     intent.putExtra("provinceId", provinceId);
+                    intent.putExtra("title", item.getTitle());
                     startActivity(intent);
                 }else {
                     Intent intent = new Intent(MenuActivity.this, WebViewActivity.class);
@@ -73,6 +78,7 @@ public class MenuActivity extends BaseActivity {
                 }
             }
         });
+        setTitle(provinceName);
         fetchMenuData();
     }
 
@@ -103,5 +109,14 @@ public class MenuActivity extends BaseActivity {
                 LogUtils.d("--NetRequest--fail--");
             }
         });
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.title_back:
+                finish();
+                break;
+        }
     }
 }

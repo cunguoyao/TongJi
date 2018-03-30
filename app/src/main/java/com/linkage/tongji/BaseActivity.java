@@ -46,7 +46,12 @@ public class BaseActivity extends SwipeBackActivity {
     }
 
     protected User getAccount() {
-        User user = SharedPreferencesUtils.getInstance(this, "report-client").getObject("assemble_", User.class);
+        User user = null;
+        try {
+            user = SharedPreferencesUtils.getInstance(this, "report-client").getObject("assemble_", User.class);
+        } catch (Exception e) {
+
+        }
         return user;
     }
 

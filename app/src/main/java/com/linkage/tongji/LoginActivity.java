@@ -63,6 +63,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private boolean autoLogin;
 	private EditPwdDialog editPwdDialog;
 
+	private int fromLogout;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -86,6 +88,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	}
 
 	private void initView() {
+		fromLogout = getIntent().getIntExtra("logout", 0);
 		mBtnLogin = (TextView) findViewById(R.id.main_btn_login);
 		progress = findViewById(R.id.layout_progress);
 		mInputLayout = findViewById(R.id.input_layout);
@@ -106,12 +109,14 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				return false;
 			}
 		});
-		user = getAccount();
-		if(user != null) {
-			tv_user.setText(user.getLoginName());
-//			tv_pwd.setText(user.getLoginPass());
-			autoLogin = true;
-			handler.sendEmptyMessageDelayed(1, 100);
+		if(fromLogout != 1) {
+			user = getAccount();
+			if (user != null) {
+				tv_user.setText(user.getLoginName());
+				//tv_pwd.setText(user.getLoginPass());
+				autoLogin = true;
+				handler.sendEmptyMessageDelayed(1, 100);
+			}
 		}
 	}
 
@@ -219,6 +224,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		b.putSerializable("IndexReportList", list);
 		intent_sl.putExtras(b);
 		startActivity(intent_sl);
+		finish();
 	}
 
 	//login @params:password is after md5

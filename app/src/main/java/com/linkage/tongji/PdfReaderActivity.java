@@ -2,6 +2,7 @@ package com.linkage.tongji;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.joanzapata.pdfview.PDFView;
 import com.linkage.lib.SwipeBackLayout;
@@ -12,7 +13,7 @@ import java.io.File;
  * Created by cunguoyao on 2018/3/30.
  */
 
-public class PdfReaderActivity extends BaseActivity {
+public class PdfReaderActivity extends BaseActivity implements View.OnClickListener {
 
     private PDFView pdfView;
     private String pdfPath;
@@ -24,6 +25,8 @@ public class PdfReaderActivity extends BaseActivity {
         setContentView(R.layout.activity_pdf_reader);
 //        getSwipeBackLayout().setSwipeMode(SwipeBackLayout.FULL_SCREEN_LEFT);
         setSwipeBackEnable(true);
+        (findViewById(R.id.title_back)).setVisibility(View.VISIBLE);
+        (findViewById(R.id.title_back)).setOnClickListener(this);
         pdfView = (PDFView) findViewById(R.id.pdfview);
         pdfPath = getIntent().getStringExtra("pdf_path");
         title = getIntent().getStringExtra("title");
@@ -32,7 +35,7 @@ public class PdfReaderActivity extends BaseActivity {
             return;
         }
         File file = new File(pdfPath);
-        if(file.isFile() && file.exists()) {
+        if(file != null && file.exists()) {
             //加载assets下的文件
             pdfView.fromFile(file)
                     //.fromFile("")指定加载某个文件
@@ -49,5 +52,14 @@ public class PdfReaderActivity extends BaseActivity {
             finish();
         }
         setTitle(title);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.title_back:
+                finish();
+                break;
+        }
     }
 }
