@@ -45,7 +45,7 @@ public class EditPwdDialog {
 	public EditPwdDialog builder() {
 		// 获取Dialog布局
 		View view = LayoutInflater.from(context).inflate(
-				R.layout.view_alertdialog, null);
+				R.layout.view_editdialog, null);
 
 		// 获取自定义Dialog布局中的控件
 		lLayout_bg = (LinearLayout) view.findViewById(R.id.lLayout_bg);

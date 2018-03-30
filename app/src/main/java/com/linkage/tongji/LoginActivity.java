@@ -283,7 +283,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 					User user = getAccount();
 					user.setLoginPass(C.md5(password));
 					SharedPreferencesUtils.getInstance(LoginActivity.this, "report-client").setObject("assemble_", user);
-					String token = jsonObject.optJSONObject("data").optString("token");
+					String token = user.getToken();
 					fetchIndexReport(token);
 				}else {
 					String msg = jsonObject.optString("msg");

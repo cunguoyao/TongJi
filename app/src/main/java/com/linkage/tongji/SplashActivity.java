@@ -82,7 +82,6 @@ public class SplashActivity extends BaseActivity {
                     int versionCode = version.getVersion();
                     if(versionCode > BuildInfo.VERSION_CODE) {
                         popNeedUpdate(version);
-                        goToLogin();
                     }else if(versionCode == BuildInfo.VERSION_CODE) {
                         int pathVersion = version.getPatch();
                         if(pathVersion > Integer.valueOf(BuildInfo.TINKER_ID)) {
