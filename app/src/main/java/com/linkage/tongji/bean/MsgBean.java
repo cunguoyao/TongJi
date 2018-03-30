@@ -1,50 +1,14 @@
 package com.linkage.tongji.bean;
 
+import java.io.Serializable;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+public class MsgBean implements Serializable {
 
-import java.util.ArrayList;
-import java.util.List;
-
-
-
-public class MsgBean {
-
-
-
-	public  long id;
-
-	public String title;
-
-	public String time;
-
-	public String content;
-
-	public String url;
-
-
-	public static MsgBean parseFromJson(JSONObject jsonObj) {
-		MsgBean talk = new MsgBean();
-		talk.setId(jsonObj.optLong("msgId"));
-		talk.setContent(jsonObj.optString("content"));
-		talk.setTitle(jsonObj.optString("title"));
-		talk.setUrl(jsonObj.optString("url"));
-		talk.setTime(jsonObj.optString("time"));
-		return talk;
-	}
-
-	public static List<MsgBean> parseFromJson(JSONArray jsonArray) {
-		List<MsgBean> talks = new ArrayList<MsgBean>();
-		if (jsonArray != null && jsonArray.length() > 0) {
-			for (int i = 0; i < jsonArray.length(); i++) {
-				MsgBean talk = parseFromJson(jsonArray.optJSONObject(i));
-				if (talk != null)
-					talks.add(talk);
-			}
-		}
-		return talks;
-	}
+	private  long id;
+	private String title;
+	private String time;
+	private String content;
+	private String url;
 
 	public long getId() {
 		return id;

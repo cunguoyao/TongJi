@@ -58,6 +58,7 @@ public class MenuActivity extends BaseActivity {
                 MenuBean item = menuAdapter.getItem(i);
                 if(item.getCategory() == 6) {
                     Intent intent = new Intent(MenuActivity.this, MsgCentreActivity.class);
+                    intent.putExtra("provinceId", provinceId);
                     startActivity(intent);
                 }else {
                     Intent intent = new Intent(MenuActivity.this, WebViewActivity.class);

@@ -6,7 +6,7 @@ package com.linkage.tongji.app;
 
 public class Urls {
 
-    public static final int pageSize = 10;
+    public static final int pageSize = 20;
 
     public static final String web = "http://221.130.6.210:9822";
     public static final String api = web + "/report-client/api";
@@ -16,4 +16,5 @@ public class Urls {
     public static final String resetPass = api + "/login/resetPass";
     public static final String indexReportList = api + "/report/getIndexReportList";
     public static final String menuList = api + "/skip/getSkipAddress";
+    public static final String provinceDetail = api + "/report/getProvinceDetailList";
 }
