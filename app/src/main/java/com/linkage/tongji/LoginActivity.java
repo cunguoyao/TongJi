@@ -402,13 +402,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 						modify(token, input1);
 					}
 		}).show();
-		Timer timer = new Timer();
-		timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				editPwdDialog.showKeyboard();
-			}
-		}, 200);
+
 	}
 
 	@Override
