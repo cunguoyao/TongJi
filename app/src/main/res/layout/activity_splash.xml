@@ -2,12 +2,22 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/splash_bg">
+    android:background="@drawable/login">
 
     <ImageView
         android:layout_width="144dp"
         android:layout_height="144dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="100dp"
+        android:visibility="gone"
         android:src="@drawable/ic_launcher"/>
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/gif1"
+        android:layout_width="144dp"
+        android:layout_height="144dp"
+        android:layout_marginTop="100dp"
+        android:layout_centerHorizontal="true"/>
+
+
 </RelativeLayout>

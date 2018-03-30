@@ -1,6 +1,7 @@
 package com.linkage.tongji;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,6 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import okhttp3.Request;
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
 
 /**
  * Created by cunguoyao on 2018/3/29.
@@ -43,6 +46,25 @@ public class SplashActivity extends BaseActivity {
                 fetchData();
             }
         }, 500);
+
+        GifImageView gifImageView1 = (GifImageView) findViewById(R.id.gif1);
+
+
+
+        try {
+            // 如果加载的是gif动图，第一步需要先将gif动图资源转化为GifDrawable
+            // 将gif图资源转化为GifDrawable
+            GifDrawable gifDrawable = new GifDrawable(getResources(), R.drawable.bg_launcher);
+
+            // gif1加载一个动态图gif
+            gifImageView1.setImageDrawable(gifDrawable);
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void fetchData() {

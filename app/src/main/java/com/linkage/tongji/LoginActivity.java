@@ -110,7 +110,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		user = getAccount();
 		if(user != null) {
 			tv_user.setText(user.getLoginName());
-			tv_pwd.setText(user.getLoginPass());
+//			tv_pwd.setText(user.getLoginPass());
 			autoLogin = true;
 			handler.sendEmptyMessageDelayed(1, 100);
 		}
@@ -126,9 +126,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 					Toast.makeText(this, "请输入账号", Toast.LENGTH_SHORT).show();
 					return;
 				}
-				if(TextUtils.isEmpty(password)) {
-					Toast.makeText(this, "请输入密码", Toast.LENGTH_SHORT).show();
-					return;
+				if(!autoLogin) {
+					if (TextUtils.isEmpty(password)) {
+						Toast.makeText(this, "请输入密码", Toast.LENGTH_SHORT).show();
+						return;
+					}
 				}
 				mBtnLogin.setVisibility(View.GONE);
 				hideKeyboard(mPsw.getWindowToken());
@@ -223,6 +225,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		Map<String, String> params = new HashMap<>();
 		params.put("user", username);
 		params.put("pwd", password);
+		autoLogin = false;
 		NetRequest.postFormRequest(Urls.login, params, TAG, new NetRequest.DataCallBack() {
 			@Override
 			public void requestSuccess(String result) {

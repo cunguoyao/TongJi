@@ -74,8 +74,9 @@ public class MapActivity extends BaseActivity {
             @Override
             public void onChose(String provincename) {
                 //地图点击省份回调接口，listview滚动到相应省份位置
-                for (int i = 0; i < list.size(); i++) {
-                    if (list.get(i).contains(provincename)) {
+                for (int i = 0; i < indexReports.size(); i++) {
+                    IndexReport info=(IndexReport)indexReports.get(i);
+                    if (info.getProvinceName().contains(provincename)) {
                         adapter.setPosition(i);
                         province_listview.setSelection(i);
                         break;
