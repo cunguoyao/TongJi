@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Environment;
 import android.support.multidex.MultiDex;
 
 import com.linkage.utils.tinker.TinkerManager;
@@ -12,6 +13,7 @@ import com.tencent.tinker.anno.DefaultLifeCycle;
 import com.tencent.tinker.loader.app.DefaultApplicationLike;
 import com.tencent.tinker.loader.shareutil.ShareConstants;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,5 +72,14 @@ public class BaseApplication extends DefaultApplicationLike {
 
     public List<String> getUnSetStateBarColorPage() {
         return unSetStateBarColorPage;
+    }
+
+    public File getDirs() {
+        File file = Environment.getExternalStorageDirectory();
+        File workspace = new File(file, "report-client");
+        if (!workspace.exists()) {
+            workspace.mkdirs();
+        }
+        return workspace;
     }
 }

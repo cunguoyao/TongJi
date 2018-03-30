@@ -3,6 +3,8 @@
     package="com.linkage.tongji">
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application
         android:name=".app.TApplication"
         android:allowBackup="true"
@@ -33,6 +35,9 @@
             android:name="com.linkage.tongji.WebViewActivity"/>
         <activity
             android:name="com.linkage.tongji.MsgCentreActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.linkage.tongji.PdfReaderActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.linkage.tongji.ViewPagerActivity"

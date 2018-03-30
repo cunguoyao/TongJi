@@ -65,9 +65,10 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.4.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.google.code.gson:gson:2.6.2'
+    compile 'com.joanzapata.pdfview:android-pdfview:1.0.4@aar'
+    compile(name:'android-gif-drawable-1.2.5', ext:'aar')
     androidTestCompile 'com.android.support:support-annotations:26.1.0'
     androidTestCompile 'junit:junit:4.12'
-    compile(name:'android-gif-drawable-1.2.5', ext:'aar')
     androidTestCompile 'com.android.support.test:runner:1.0.1'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:3.0.1'
     compile("com.tencent.tinker:tinker-android-lib:${TINKER_VERSION}") { changing = true }
