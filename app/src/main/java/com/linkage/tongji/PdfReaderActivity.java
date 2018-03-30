@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.joanzapata.pdfview.PDFView;
+import com.linkage.lib.SwipeBackLayout;
 
 import java.io.File;
 
@@ -20,6 +21,7 @@ public class PdfReaderActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pdf_reader);
+//        getSwipeBackLayout().setSwipeMode(SwipeBackLayout.FULL_SCREEN_LEFT);
         setSwipeBackEnable(true);
         pdfView = (PDFView) findViewById(R.id.pdfview);
         pdfPath = getIntent().getStringExtra("pdf_path");
