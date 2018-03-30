@@ -64,7 +64,13 @@ public class provinceAdapter extends BaseAdapter{
         }
         viewHolder.province_name.setText(item.getProvinceName());
         viewHolder.province_user_total.setText(item.getUserTotal()+"");
-        viewHolder.province_user_increase.setText(item.getUserIncrease()+"");
+        String increase;
+        if(item.getUserIncrease() == 0) {
+            increase = "";
+        }else {
+            increase = item.getUserIncrease()+"";
+        }
+        viewHolder.province_user_increase.setText(increase);
         viewHolder.update_date.setText(item.getCreateTime());
         if (i==position){
             viewHolder.province_name.setTextColor(Color.RED);
