@@ -158,10 +158,12 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			}
 		});
 		AnimatorSet set = new AnimatorSet();
-		ObjectAnimator animator2 = ObjectAnimator.ofFloat(mInputLayout, "scaleX", 1f, 0.2f);
+		ObjectAnimator animator2 = ObjectAnimator.ofFloat(mInputLayout, "scaleX", 1f, 0.1f);
+		ObjectAnimator animator1 = ObjectAnimator.ofFloat(mInputLayout, "scaleY", 1f, 0.1f);
 		set.setDuration(500);
 		set.setInterpolator(new AccelerateDecelerateInterpolator());
 		set.playTogether(animator, animator2);
+		set.playTogether(animator, animator1);
 		set.start();
 		set.addListener(new AnimatorListener() {
 
@@ -252,10 +254,15 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		params.rightMargin = 0;
 		mInputLayout.setLayoutParams(params);
 
-		ObjectAnimator animator2 = ObjectAnimator.ofFloat(mInputLayout, "scaleX", 0.2f, 1f );
-		animator2.setDuration(500);
+		ObjectAnimator animator2 = ObjectAnimator.ofFloat(mInputLayout, "scaleX", 0.1f, 1f );
+		ObjectAnimator animator1 = ObjectAnimator.ofFloat(mInputLayout, "scaleY", 0.1f, 1f );
+		animator2.setDuration(10);
 		animator2.setInterpolator(new AccelerateDecelerateInterpolator());
 		animator2.start();
+
+		animator1.setDuration(10);
+		animator1.setInterpolator(new AccelerateDecelerateInterpolator());
+		animator1.start();
 	}
 
     //首次登录修改密码

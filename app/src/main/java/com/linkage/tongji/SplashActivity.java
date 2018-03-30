@@ -45,7 +45,7 @@ public class SplashActivity extends BaseActivity {
             public void run() {
                 fetchData();
             }
-        }, 500);
+        }, 2500);
 
         GifImageView gifImageView1 = (GifImageView) findViewById(R.id.gif1);
 
@@ -82,6 +82,7 @@ public class SplashActivity extends BaseActivity {
                     int versionCode = version.getVersion();
                     if(versionCode > BuildInfo.VERSION_CODE) {
                         popNeedUpdate(version);
+                        goToLogin();
                     }else if(versionCode == BuildInfo.VERSION_CODE) {
                         int pathVersion = version.getPatch();
                         if(pathVersion > Integer.valueOf(BuildInfo.TINKER_ID)) {
