@@ -22,6 +22,7 @@ import com.linkage.utils.FileHelper;
 import com.linkage.utils.LogUtils;
 import com.linkage.utils.NetRequest;
 import com.linkage.utils.SharedPreferencesUtils;
+import com.linkage.utils.URLToUTF8;
 import com.linkage.widget.SimpleListView;
 
 import org.json.JSONObject;
@@ -122,6 +123,7 @@ public class MsgCentreActivity extends BaseActivity implements SimpleListView.On
 			Toast.makeText(this, "地址为空", Toast.LENGTH_SHORT).show();
 			return;
 		}
+		item.setUrl(URLToUTF8.toUtf8String(item.getUrl()));
 		String pdfPath = SharedPreferencesUtils.getInstance(MsgCentreActivity.this, "pdf_").getObject(item.getUrl(), String.class);
 		if(TextUtils.isEmpty(pdfPath)) {
 			LogUtils.i("-----pdfPath=null, download");
